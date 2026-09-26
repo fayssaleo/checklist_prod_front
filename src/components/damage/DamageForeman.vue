@@ -593,7 +593,7 @@ export default {
           updated_at: "",
         },
       },
-      photos: [
+      files: [
         {
           id: null,
           description: null,

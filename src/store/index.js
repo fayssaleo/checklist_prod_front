@@ -21,6 +21,7 @@ Vue.use(Vuex);
   // filter: mutation => (true)
   reducer: (state) => ({
     usersModule: state.usersModule,
+    profilegroupModule: state.profilegroupModule,
   }),
   filter: mutation => (true),
 }); 

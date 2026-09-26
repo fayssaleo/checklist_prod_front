@@ -1,22 +1,27 @@
 <template>
-  <v-card @mousemove="resetTimer" v-if="logged" class="mx-auto overflow-hidden">
+  <v-card @mousemove="resetTimer" v-if="logged" class="mx-auto overflow-hidden" >
     <TimeoutLOgin
       :changeLoginValueToFalse="changeLoginValueToFalse"
       v-if="timeOutLogin"
     />
-    <v-app-bar color="#fff" style="border-bottom: 2px solid #002f6c">
+    <v-app-bar class="title_bar"  color="#fff" style="border-radius:0 !important; padding-left: 6px;border-bottom: 2px solid #002f6c; background-color: #152855; color:'white'">
       <v-app-bar-nav-icon
-        v-if="this.fonction != 'DRIVER'"
+      style="color: white; border-radius:0 !important;"
+        v-if="
+        fonction =='ADMIN' || 
+        fonction =='SHIFT MANAGER' || 
+        getUserActive.username =='0080'  
+        "
         @click="drawer = true"
       ></v-app-bar-nav-icon>
 
-      <v-toolbar-title>
+      <v-toolbar-title style="    margin-left: 5px;">
         <v-img
+        class="title_logo"
           contain
-          lazy-src="./assets/TangerAlliance.png"
-          max-height="100"
-          max-width="150"
-          src="./assets/TangerAlliance.png"
+          lazy-src="./assets/TangerAlliance__.svg"
+
+          src="./assets/TangerAlliance__.svg"
         ></v-img>
       </v-toolbar-title>
       <h4 class="title">CHECKLIST</h4>
@@ -91,12 +96,12 @@
             transition="scale-transition"
           >
             <template class="pa-2" v-slot:activator="{ on, attrs }">
-              <v-btn v-bind="attrs" v-on="on">
+              <v-btn class="accountSsr" v-bind="attrs" v-on="on">
                 <v-icon> mdi-account-cog </v-icon>
               </v-btn>
             </template>
             <v-list class="text-center">
-              <div class="pa-4">
+              <div class="pa-4 accountSsr">
                 <v-icon x-large>mdi-account-circle-outline</v-icon>
                 <h4 class="text-uppercase title">
                   {{ getUserActive.username }}
@@ -127,26 +132,29 @@
       absolute
       temporary
       width="15em"
-      style="background-color: #fff"
+      style="background-color: rgb(26 38 91)!important;"
     >
       <v-list style="padding: 0px; align-items: center" nav dense>
         <v-list-item-group
           class="itemDrawer"
           active-class="deep-purple--text text--accent-4"
         >
-          <br />
           <v-img
+          style="margin: 0 auto; margin-top: 16px;margin-bottom: 30px"
             contain
-            lazy-src="./assets/TangerAlliance.png"
-            max-height="220"
-            max-width="250"
-            src="./assets/TangerAlliance.png"
+            lazy-src="./assets/TangerAlliance__.svg"
+            class="sideBarLogo"
+            max-height="200"
+            max-width="200"
+            src="./assets/TangerAlliance__.svg"
           ></v-img>
 
           <v-list
             v-if="
               department == 'TECHNIQUE' ||
-              (department == 'OPERATIONS' && fonction != 'DRIVER')
+              (department == 'OPERATIONS' &&
+                fonction != 'DRIVER' &&
+                fonction != 'CHECKER')
             "
           >
             <v-list-item-group active-class="activeDrawer" class="itemDrawer">
@@ -158,19 +166,26 @@
             </v-list-item-group>
           </v-list>
 
-          <v-list class="" v-if="fonction == 'ADMIN'">
+          <v-list
+            class=""
+            v-if="fonction == 'ADMIN' || fonction == 'SHIFT MANAGER'"
+          >
             <v-list-item-group active-class="activeDrawer" class="itemDrawer">
               <router-link class="linktext" to="/userGestion">
                 <div class="itemdrawer">
                   <v-list-item class="itemd"> Gestion Users </v-list-item>
                 </div>
               </router-link>
-              <router-link class="linktext" to="/profile_groupe">
+              <router-link
+              v-if="fonction == 'ADMIN'"
+              class="linktext" to="/profile_groupe">
                 <div class="itemdrawer">
                   <v-list-item class="itemd"> Equipment </v-list-item>
                 </div>
               </router-link>
-              <router-link class="linktext" to="/technique">
+              <router-link
+              v-if="fonction == 'ADMIN'"
+              class="linktext" to="/technique">
                 <div class="itemdrawer">
                   <v-list-item class="itemd"> Technique </v-list-item>
                 </div>
@@ -186,7 +201,10 @@
               </router-link>
             </v-list-item-group>
           </v-list>
-          <v-list v-else-if="fonction == 'DRIVER'" class="foremanandTechnique">
+          <v-list
+            v-else-if="fonction == 'DRIVER' || fonction == 'CHECKER'"
+            class="foremanandTechnique"
+          >
             <v-list-item-group active-class="activeDrawer" class="itemDrawer">
               <router-link class="linktext" to="/Damage">
                 <div class="itemdrawer">
@@ -198,8 +216,8 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
-    <v-app style="background-color: #fff">
-      <router-view />
+    <v-app style="background-color:white;">
+      <router-view  style="    min-height: 94vh !;"/>
     </v-app>
   </v-card>
   <Login v-else />

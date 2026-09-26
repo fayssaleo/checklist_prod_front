@@ -1,67 +1,56 @@
 <template>
-  <div style="height: 100%;padding: 0; padding-top: 13px;padding-bottom: 13px;    background-color: #7d859738;">
-    <div>
+  <div style="padding: 0; padding-top: 13px">
+    <div style="margin: 0 auto; width: 100%">
       <v-container class="damageContainer">
         <v-row>
-          <v-col class="damageSelect" style=" padding-left: 62px; padding-right: 62px; " cols="12" sm="6" md="6">
-            <v-select s tyle="cursor: pointer !important;" solo :items="profile_groupe" item-text="name" item-value="id"
-              v-model="profile_groupe_id" label="Equipment groups :" :disabled="disabled"
-              @change="changeProfile_groupeSELECT" ref="profileGroupSelect"></v-select>
+          <v-col cols="12" sm="6" md="6">
+            <v-select :items="profile_groupe" item-text="name" item-value="id" v-model="profile_groupe_id"
+              label="Equipment groups :" :disabled="disabled" @change="changeProfile_groupeSELECT"></v-select>
           </v-col>
-          <v-col class="damageSelect" style=" padding-left: 62px; padding-right: 62px; " cols="12" sm="6" md="6">
-            <v-select ref="profileGroupSelect_2" style="cursor: pointer !important;" solo :items="equipmentsFiltre" item-text="name"
-              item-value="id" v-model="equipments_id" label="Equipment :" @change="changeEquipmentsFiltreSELECT"
+          <v-col cols="12" sm="6" md="6">
+            <v-select :items="equipmentsFiltre" item-text="name" item-value="id" v-model="equipments_id"
+              label="Equipment :" @change="changeEquipmentsFiltreSELECT"
               :disabled="disabledEquipmentsFiltre"></v-select>
           </v-col>
         </v-row>
-
-
-
-
         <v-dialog v-model="dialog" persistent max-width="600px">
           <v-card>
-            <v-toolbar dark style="background-color: rgb(21, 40, 85);">
-              <v-toolbar-title>CHECKLIT VALIDATION</v-toolbar-title>
+            <v-toolbar dark color="error">
+              <v-toolbar-title>Warning !</v-toolbar-title>
             </v-toolbar>
             <v-card-title class="text-h5">
-              Click <span style="font-weight: 900;color:rgb(21, 40, 85)">YES</span> if you want to validate your
-              checklist:
+              Are you sure to validate this Checklist ?
             </v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn style="    font-weight: 900;" color="white" @click="cancel"> No </v-btn>
-              <v-btn style="   background-color: rgb(73 114 209); font-weight: 900;" @click="dialog = false"> Yes
-              </v-btn>
+              <v-btn style="    font-weight: 900;" color="primary" @click="dialog = false"> Yes </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
-
-
-
         <v-dialog v-model="cmt_actual_pic_edit" persistent max-width="600px">
           <v-card>
-            <v-toolbar dark style="background-color: rgb(21, 40, 85);">
+            <v-toolbar dark color="error">
               <v-toolbar-title>ALREADY SELECTED DEFECT SUB TYPE !</v-toolbar-title>
             </v-toolbar>
             <v-card-title class="text-h5">
               The sub defect type is already selected.<br> <span
-                style="margin-top: 45px; font-weight: 700; color: rgb(81 101 255); ">PLEASE SELECT THE NEXT ACTION
-                :</span>
+                style="margin-top: 45px; font-weight: 700; color: #ff0000; ">PLEASE SELECT THE NEXT ACTION :</span>
             </v-card-title>
             <v-card-text class="font-weight-bold"></v-card-text>
             <v-card-actions>
-              <v-spacer></v-spacer>
               <v-btn color="white" @click="cmt_actual_pic_edit = false"> Cancel </v-btn>
-              <v-btn style=" font-weight: 700; color: white; " color="rgb(21, 40, 85)"
+              <v-spacer></v-spacer>
+              <v-btn style=" font-weight: 700; color: white; " color="orange"
                 @click="cmt_actual_pic_edit = false; valider_3(selected_sub_Defect)"> UNSELECT </v-btn>
-              <v-btn style=" font-weight: 700; color: white; " color="rgb(105 142 229)"
+              <v-btn style=" font-weight: 700; color: white; " color="primary"
                 @click="cmt_actual_pic_edit = false; techDefects_withCmt(selected_sub_Defect)"> EDIT </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
         <v-dialog v-model="cmt_actual_pic_delete" persistent max-width="600px">
           <v-card>
-            <v-toolbar dark style="background-color: rgb(21, 40, 85);">
+            <v-toolbar dark color="error">
               <v-toolbar-title>Warning !</v-toolbar-title>
             </v-toolbar>
             <v-card-title class="text-h5">
@@ -77,91 +66,66 @@
         </v-dialog>
         <v-dialog v-model="dialogValide" persistent max-width="600px">
           <v-card>
-            <v-toolbar dark style="background-color: rgb(21, 40, 85);">
-              <v-toolbar-title>CHECKLIT VALIDATION</v-toolbar-title>
+            <v-toolbar dark color="error">
+              <v-toolbar-title>Warning !</v-toolbar-title>
             </v-toolbar>
             <v-card-title class="text-h5">
-              Click <span style="font-weight: 900;color:rgb(21, 40, 85)">YES</span> if you want to validate your
-              checklist:
+              Are you sure to validate this Checklist ?
             </v-card-title>
             <v-card-text class="font-weight-bold"></v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="white" @click="cancelvalide()"> No </v-btn>
-              <v-btn color="rgb(21, 40, 85)" @click="valider()"> Yes </v-btn>
+              <v-btn color="primary" @click="valider()"> Yes </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
         <v-dialog v-model="dialogValideDamage" persistent max-width="600px">
           <v-card>
-            <v-toolbar dark style="background-color: rgb(21, 40, 85);">
-              <v-toolbar-title style="font-weight: 900">CHECKLIT VALIDATION</v-toolbar-title>
+            <v-toolbar dark color="error">
+              <v-toolbar-title>Warning !</v-toolbar-title>
             </v-toolbar>
             <v-card-title class="text-h5">
-              Click <span style="margin-left:6px; margin-right:6px; font-weight: 900;color:rgb(144 177 255)">YES</span>
-              if you want to validate your checklist:
+              Are you sure to validate this Checklist ?
             </v-card-title>
             <v-card-text class="font-weight-bold"></v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="white" @click="dialogValideDamage = false" style=" font-weight: 900;">
+              <v-btn color="white" @click="dialogValideDamage = false">
                 No
               </v-btn>
-              <v-btn style="color:white; background-color: rgb(73 114 209); font-weight: 900;"
-                @click="validerDamages()"> Yes </v-btn>
+              <v-btn color="primary" @click="validerDamages()"> Yes </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
         <v-dialog v-model="driver_comment_dialog" persistent max-width="700">
           <v-card>
-            <v-card-title class="text-h5  lighten-1 white--text" style="background-color: rgb(21, 40, 85);">
-              <v-icon
-                style=" font-size: 51px; margin-left: -12px; margin-right: 9px; margin-bottom: 5px; color: white; ">{{
-                  selectedDefect?.icon }}</v-icon>
-              {{ selectedDefect?.name }} DEFECT TYPES:
+            <v-card-title class="text-h5 red lighten-1 white--text">
+              {{ selectedDefect?.name }} - Sub Types :
             </v-card-title>
             <v-spacer></v-spacer>
-            <v-card-text class="pa-4 black--text" style="   font-size: 30px; font-weight: 900;">
+            <v-card-text class="pa-4 black--text" style="    font-weight: 900;">
               Please select a defect specification :
               <v-row class="subType  m-0 p-0">
-                <v-col style="padding: 0;" class=" m-0 p-0" cols="6"
-                v-for="(item,i) in defectList.filter((t) => t.name != 'Other & comment').reverse()"
-                :key="i">
+                <v-col style="padding: 0;" class=" m-0 p-0" cols="6" v-for="item in defectList">
                   <span v-if="item.damage == null"
-                    @click="item?.name != 'Other & comment' && isChecked(item) ? cmt_actual_pic_edit_open(item) : techDefects_withCmt(item)"
-                    :class="item?.name != 'Other & comment' && isChecked(item) ? 'checked' : ''" class="sub_box m-0 p-0
+                    @click="isChecked(item) ? cmt_actual_pic_edit_open(item) : techDefects_withCmt(item)"
+                    :class="isChecked(item) ? 'checked' : ''" class="sub_box m-0 p-0
                   ">{{ item.name }}</span>
-                  <span v-else-if="item?.name != 'Other & comment' && item.damage.status == 'on progress'"
-                    @click="defectedFunction(item)" class="sub_box progress m-0 p-0">{{ item.name }}</span>
-                  <span v-else-if="item?.name != 'Other & comment' && item.damage.status == 'resolved'"
-                    @click="resolvedFunction(item)" class="sub_box resolved m-0 p-0">{{ item.name }}</span>
-                </v-col>
-
-
-
-                <v-col style="padding: 0;" class=" m-0 p-0" cols="6"
-                  v-for="(item,i) in defectList.filter((t) => t.name == 'Other & comment')"
-                  :key="i"
-                  >
-                  <span v-if="item.damage == null"
-                    @click="item?.name != 'Other & comment' && isChecked(item) ? cmt_actual_pic_edit_open(item) : techDefects_withCmt(item)"
-                    :class="item?.name != 'Other & comment' && isChecked(item) ? 'checked' : ''" class="sub_box m-0 p-0
-                  ">{{ item.name }}</span>
-                  <span v-else-if="item?.name != 'Other & comment' && item.damage.status == 'on progress'"
-                    @click="defectedFunction(item)" class="sub_box progress m-0 p-0">{{ item.name }}</span>
-                  <span v-else-if="item?.name != 'Other & comment' && item.damage.status == 'resolved'"
-                    @click="resolvedFunction(item)" class="sub_box resolved m-0 p-0">{{ item.name }}</span>
+                  <span v-else-if="item.damage.status == 'on progress'" @click="defectedFunction(item)"
+                    class="sub_box progress m-0 p-0">{{ item.name }}</span>
+                  <span v-else-if="item.damage.status == 'resolved'" @click="resolvedFunction(item)"
+                    class="sub_box resolved m-0 p-0">{{ item.name }}</span>
                 </v-col>
               </v-row>
             </v-card-text>
             <v-card-actions>
-              <v-spacer></v-spacer>
               <v-btn style="    font-weight: 900;" color="#fff " @click="valider_cmt_first_cancel()">
                 Cancel
               </v-btn>
-              <v-btn
-                style="background-color: rgb(68 96 163);border-color: rgb(21, 40, 85);color: white;font-weight: 900;width: 143px;font-size: 18px;"
-                class="mr-2" color="rgb(21, 40, 85)" @click="valider_cmt_first_confirm()">
+              <v-spacer></v-spacer>
+              <v-btn style="color:white   ; font-weight: 900;" class="mr-2" color="#76ba99"
+                @click="valider_cmt_first_confirm()">
                 Confirm
               </v-btn>
 
@@ -183,19 +147,9 @@
                   @click="downloadImage(cmt_actual_pic)">
                   DOWNLOAD
                 </v-btn>
-                <v-btn style="    background-color: rgb(229 229 229);
-                                  border-color: rgb(201 25 25);
-                                  margin-left: 8px;
-                                  /* font-weight: 900; */
-                                  margin-right: 14px;
-                                  font-size: 31px;
-                                  border-radius: 46px;
-                                  /* width: 16px !important; */
-                                  color: #913333;" @click="damageTech_cmt_fullscreen_img = false">
-                  <v-icon style="    color: #b04242;
-                                    font-size: 37px;
-                                    margin-top: 2px;
-                                ">mdi-close-circle</v-icon>
+                <v-btn style="margin-left:8px  ;font-weight: 900;" color="#fff "
+                  @click="damageTech_cmt_fullscreen_img = false">
+                  CLOSE
                 </v-btn>
               </v-card-title>
               <v-divider class="mb-4"></v-divider>
@@ -207,28 +161,20 @@
             </v-card>
           </template>
         </v-dialog>
-        <v-dialog v-model="damageTech_cmt" persistent max-width="800px">
+        <v-dialog v-model="damageTech_cmt" persistent max-width="490">
           <v-card>
-            <v-card-title class="text-h5 lighten-1 white--text" style="background-color: rgb(79 102 156);">
-              <v-icon style=" font-size: 40px;
-              margin-left: -12px;
-              margin-right: 9px;
-              margin-bottom: 5px;
-              color: white; ">{{ selected_sub_Defect?.damageType_master?.icon }}</v-icon>
-              Declare item : {{ selected_sub_Defect?.name }}
+            <v-card-title class="text-h5 red lighten-1 white--text">
+              {{ selected_sub_Defect?.name }} - DETAILS :
             </v-card-title>
             <v-spacer></v-spacer>
 
-            <v-card-text class="pa-4 black--text" style="font-size: 19px; font-weight: 900; ">
-              <span style="font-size: 19px; font-weight: 900; margin-bottom: 17px; display: inline-block;">Add details
-                (comment/pictures) :</span>
-              <v-textarea 
-              :placeholder="'I have found that the '+selected_sub_Defect?.name+' is/are defective..'"
-              label="Defect comment.." v-model="damageTech_cmt_payload.comment" name="input-7-1"
-                variant="outlined" style="BACKGROUND-COLOR:#cacaca !important;" class="sub_comment_text"></v-textarea>
+            <v-card-text class="pa-4 black--text" style="    font-weight: 900;">
+              Add details (comment/pictures) :
+              <v-textarea label="Defect comment.." v-model="damageTech_cmt_payload.comment" name="input-7-1"
+                variant="outlined" style="BACKGROUND-COLOR: #e4d551 !important;" class="sub_comment_text"></v-textarea>
               <div cols="12" md="12" class="cmt_pic_background">
                 <span class="images_pannel">
-                  <img v-for="(pic,i) in damageTech_cmt_payload.files" :key="i" @click="imagefullScreen(pic)" :src="getImageUrl(pic)"
+                  <img v-for="pic in damageTech_cmt_payload.pics" @click="imagefullScreen(pic)" :src="getImageUrl(pic)"
                     alt="">
 
                 </span>
@@ -240,46 +186,33 @@
               </div>
             </v-card-text>
             <v-card-actions>
-              <v-spacer></v-spacer>
               <v-btn style="    font-weight: 900;" color="#fff " @click="techDefects_withCmt_close">
                 Cancel
               </v-btn>
-              <v-btn
-                v-if="Data.filter((r) => r.damage_type_id == selected_sub_Defect?.id).length > 0 && selectedDefect?.damageTypes.length == 1 && selected_sub_Defect?.damage_type_master.name == 'OTHER'"
-                style="width:250px; color:white   ;    font-weight: 900; background-color: rgb(73 114 209);"
-                class="mr-2" @click="valider_3(selected_sub_Defect)">
-                Not-Defective
-              </v-btn>
-              <v-btn
-                :disabled="selected_sub_Defect?.damage_type_master.name == 'OTHER' && damageTech_cmt_payload.comment == ''"
-                style="width: 250px; color:white   ;   font-weight: 900;" class="mr-2" color="#d43737"
+              <v-spacer></v-spacer>
+
+              <v-btn style=" color:white   ;   font-weight: 900;" class="mr-2" color="#f54"
                 @click="techDefects_withCmt_confirm()">
-                DEFECTIVE
+                CONFIRM
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <v-dialog v-model="resolvedDialoge" persistent max-width="800px">
+        <v-dialog v-model="resolvedDialoge" persistent max-width="490">
           <v-card>
-            <v-card-title class="text-h5 lighten-1 white--text" style="background-color: rgb(79 102 156);">
-              <v-icon style=" font-size: 40px;
-              margin-left: -12px;
-              margin-right: 9px;
-              margin-bottom: 5px;
-              color: white; ">{{ resolveditem[0]?.damageType_master?.icon }}</v-icon>
-              RESOLVED ITEM : {{ resolveditem[0]?.name }}
+            <v-card-title class="text-h5 red lighten-1 white--text">
+              Warning !!
             </v-card-title>
             <v-spacer></v-spacer>
 
             <v-card-text class="pa-4 black--text" style="    font-weight: 900;">
               Warning this is a resolved item, are you sure you want to turn it
-              not-defective or defective ?
+              not-defected or defected ?
               <v-textarea label="Defect comment.." v-model="damageTech_cmt_payload.comment" name="input-7-1"
-                variant="outlined" style="BACKGROUND-COLOR:#cacaca !important; margin-top: 15px ;"
-                class="sub_comment_text"></v-textarea>
-              <div cols="12" md="12" class="cmt_pic_background">
+                variant="outlined" style="BACKGROUND-COLOR: #e4d551 !important;" class="sub_comment_text"></v-textarea>
+                <div cols="12" md="12" class="cmt_pic_background">
                 <span class="images_pannel">
-                  <img v-for="(pic,i) in damageTech_cmt_payload.files" :key="i" @click="imagefullScreen(pic)" :src="getImageUrl(pic)"
+                  <img v-for="pic in damageTech_cmt_payload.pics" @click="imagefullScreen(pic)" :src="getImageUrl(pic)"
                     alt="">
 
                 </span>
@@ -291,44 +224,34 @@
               </div>
             </v-card-text>
             <v-card-actions>
-              <v-spacer></v-spacer>
               <v-btn style="    font-weight: 900;" color="#fff " @click="resolvedDialoge = false">
                 Cancel
               </v-btn>
-              <v-btn :disabled="damageTech_cmt_payload.comment == ''"
-                style="width:250px; color:white   ;   font-weight: 900;" class="mr-2" color="#d43737" @click="revert">
-                Defective
+              <v-spacer></v-spacer>
+              <v-btn style="color:white   ;    font-weight: 900;" class="mr-2" color="#76ba99" @click="confirmed">
+                Not-Defected
               </v-btn>
-              <v-btn :disabled="damageTech_cmt_payload.comment == ''"
-                style="width:250px; color:white   ;    font-weight: 900; background-color: rgb(73 114 209);"
-                class="mr-2" @click="confirmed">
-                Not-Defective
+              <v-btn style=" color:white   ;   font-weight: 900;" class="mr-2" color="#f54" @click="revert">
+                Defected
               </v-btn>
-
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <v-dialog v-model="defectedDialoge" persistent max-width="800px">
+        <v-dialog v-model="defectedDialoge" persistent max-width="490">
           <v-card>
             <v-card-title class="text-h5 red lighten-1 white--text">
-              <v-icon style=" font-size: 40px;
-              margin-left: -12px;
-              margin-right: 9px;
-              margin-bottom: 5px;
-              color: white; ">{{ resolveditem[0]?.damageType_master?.icon }}</v-icon>
-              DEFECTIVE ITEM : {{ resolveditem[0]?.name }}
+              Warning !!
             </v-card-title>
             <v-spacer></v-spacer>
 
             <v-card-text class="pa-4 black--text" style="    font-weight: 900;">
-              This is a defective item, are you sure you want to turn it
-              not-defective ?
+              Warning this is a defected item, are you sure you want to turn it
+              not-defected ?
               <v-textarea label="Defect comment.." v-model="damageTech_cmt_payload.comment" name="input-7-1"
-                variant="outlined" style="BACKGROUND-COLOR:#cacaca !important;  margin-top: 15px ;"
-                class="sub_comment_text"></v-textarea>
-              <div cols="12" md="12" class="cmt_pic_background">
+                variant="outlined" style="BACKGROUND-COLOR: #e4d551 !important;" class="sub_comment_text"></v-textarea>
+                <div cols="12" md="12" class="cmt_pic_background">
                 <span class="images_pannel">
-                  <img v-for="(pic,i) in damageTech_cmt_payload.files" :key="i" @click="imagefullScreen(pic)" :src="getImageUrl(pic)"
+                  <img v-for="pic in damageTech_cmt_payload.pics" @click="imagefullScreen(pic)" :src="getImageUrl(pic)"
                     alt="">
 
                 </span>
@@ -340,15 +263,13 @@
               </div>
             </v-card-text>
             <v-card-actions>
-              <v-spacer></v-spacer>
               <v-btn color="#fff" @click="defectedDialoge = false">
                 Cancel
               </v-btn>
+              <v-spacer></v-spacer>
 
-              <v-btn :disabled="damageTech_cmt_payload.comment == ''"
-                style="width:250px; color:white   ;    font-weight: 900; background-color: rgb(73 114 209);"
-                class="mr-2" color="#76ba99" @click="confirmed">
-                Not-Defective
+              <v-btn style=" color:white   ;   font-weight: 900;" class="mr-2" color="#76ba99" @click="confirmed">
+                Not-Defected
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -357,27 +278,10 @@
           <v-row>
             <v-col cols="12" class="TECpanell">
               <v-row>
-                <v-col cols="6" class="d-flex justify-center" style="
-                    margin-top: 0 !important;
-                    padding: 0;
-                    /* background-color: #25204f; */
-                    max-width: 50% !important;
-                    text-align: center;
-                    margin: 0 auto;
-                    color: white !important;
-                    border-bottom-left-radius: 30px;
-                    border-bottom-right-radius: 30px;
-                    margin-bottom: 20px;
-                    border: 1px solid black;
-                    border-left: none;
-                    border-right: none;
-                    border-top: none;
-                ">
-                  <span>TECH DEFECTS : </span>
-                  <span v-if="damageTypesTEC.length > 0" class="red--text ml-3">D ({{ this.countDefectsTEC }})</span>
-                  <span v-if="damageTypesTEC.length > 0" class="warning--text ml-1"> R ({{ this.countResolvedTEC
-                  }})</span>
-                </v-col>
+                <v-col cols="12" class="d-flex justify-center">
+                  <span>Technique </span>
+                  <span class="red--text">
+                    ({{ this.countDefectsTEC + this.countResolvedTEC }})</span></v-col>
               </v-row>
 
               <v-col cols="12" sm="12" class="scroll">
@@ -386,20 +290,14 @@
                     <div class="hamzatec technique-Fayssal">
                       <v-list-item v-for="(item, i) in damageTypesTEC" :key="i" class="item" two-line
                         :class="MasterIsChecked(item) ? 'defect_active' : 'defect_intact'"
-                        @click="valider_cmt_first(item, i)" style="    border-bottom: 1px solid rgb(37 32 79 / 76%);
-                                    padding-bottom: 9px;
-                                    border-bottom-left-radius: 24px;
-                                    border-bottom-right-radius: 24px;">
+                        @click="valider_cmt_first(item, i)">
                         <v-list-item-content class="item-content">
                           <span v-if="item.important == false">
-                            <v-list-item-title name="damageTypesTEC" class="itemName">
-                              <v-icon>{{ item.icon }}</v-icon>
-                            </v-list-item-title>
-                            <v-list-item-subtitle class="itemSubtitle">
-                              <span>{{
-                                item.name }}</span>
-
-                            </v-list-item-subtitle>
+                            <v-list-item-title name="damageTypesTEC" class="itemName"
+                              style="background-color: #76ba99"></v-list-item-title>
+                            <v-list-item-subtitle class="itemSubtitle"
+                              style="color: #76ba99; width: 170px !important">{{
+                              item.name }}</v-list-item-subtitle>
                           </span>
                           <span v-else-if="item.important == true">
                             <v-list-item-title name="damageTypesTEC" class="itemName"
@@ -411,10 +309,7 @@
                               ">{{ item.name }}</v-list-item-subtitle>
                           </span>
                         </v-list-item-content>
-                        <span class="defect_details_counts">
-                          <span>D : {{ item.countDefective }}</span>
-                          <span>R : {{ item.countResolved }}</span>
-                        </span>
+
                       </v-list-item>
                     </div>
                   </v-list-item-group>
@@ -423,51 +318,23 @@
             </v-col>
             <v-col cols="12" class="ITpanell">
               <v-row>
-                <v-col cols="6" class="d-flex justify-center" style="
-                    margin-top: 0 !important;
-                    padding: 0;
-                    /* background-color: #25204f; */
-                    max-width: 50% !important;
-                    text-align: center;
-                    margin: 0 auto;
-                    color: white !important;
-                    border-bottom-left-radius: 30px;
-                    border-bottom-right-radius: 30px;
-                    margin-bottom: 20px;
-                    border: 1px solid black;
-                    border-left: none;
-                    border-right: none;
-                    border-top: none;
-                ">
-                  <span>IT DEFECTS : </span>
-                  <span v-if="damageTypesIT.length > 0" class="red--text ml-3">D ({{ this.countDefects }})</span>
-                  <span v-if="damageTypesIT.length > 0" class="warning--text ml-1"> R ({{ this.countResolved }})</span>
-                </v-col>
+                <v-col cols="12" class="d-flex justify-center">
+                  <span>IT </span>
+                  <span class="red--text">({{ this.countDefects + this.countResolved }})</span></v-col>
               </v-row>
 
               <v-col cols="12" sm="12" class="scrollIT">
                 <v-list flat>
                   <v-list-item-group name="it" v-model="modelIT" multiple color="#fff" class="ITcol TEC">
                     <div class="hamzatec">
-                      <v-list-item
-                        v-for="(item, i) in damageTypesIT.filter(e => e.name != 'OTHER' && e.damage_type_id == null)"
-                        :key="i" class="item" two-line :class="{
-                          defect_active: isChecked(item) || item.damage?.status === 'on progress',
-                          defect_intact: !(isChecked(item) || item.damage?.status === 'on progress'),
-                          resolved: item.damage?.status === 'resolved',
-                        }" @click="item.damage == null ? valider(item, i) :
-                          item.damage.status == 'on progress' ? defectedFunction(item, i) :
-                            resolvedFunction(item, i)
-
-                          ">
-                        <v-list-item-content v-if="true" class="item-content">
+                      <v-list-item v-for="(item, i) in damageTypesIT" :key="i" class="item" two-line
+                        :active-class="'bg-active'">
+                        <v-list-item-content v-if="item.damage == null" class="item-content" @click="valider(item, i)">
                           <span v-if="item.important == false">
-                            <v-list-item-title name="damageTypesTEC" class="itemName">
-                              <v-icon>{{ item.icon }}</v-icon>
-                            </v-list-item-title>
-                            <v-list-item-subtitle class="itemSubtitle">
-                              <span>{{ item.name }}</span>
-                            </v-list-item-subtitle>
+                            <v-list-item-title name="damageTypesTEC" class="itemName"
+                              style="background-color: #76ba99"></v-list-item-title>
+                            <v-list-item-subtitle class="itemSubtitle" style="color: #76ba99">{{ item.name
+                              }}</v-list-item-subtitle>
                           </span>
                           <span v-else-if="item.important == true">
                             <v-list-item-title name="damageTypesTEC" class="itemName"
@@ -478,16 +345,13 @@
                               ">{{ item.name }}</v-list-item-subtitle>
                           </span>
                         </v-list-item-content>
-
-
-
-
-                        <v-list-item-content v-else-if="item.damage.status == 'resolved'" class="item-content resolved">
+                        <v-list-item-content @click="resolvedFunction(item, i)"
+                          v-else-if="item.damage.status == 'resolved'" class="item-content resolved">
                           <span v-if="item.important == false">
                             <v-list-item-title name="damageTypesTEC" class="itemName"
                               style="background-color: #ff8f56"></v-list-item-title>
                             <v-list-item-subtitle style="color: #ff8f56" class="itemSubtitle">{{ item.name
-                            }}</v-list-item-subtitle>
+                              }}</v-list-item-subtitle>
                           </span>
                           <span v-else-if="item.important == true">
                             <v-list-item-title name="damageTypesTEC" class="itemName"
@@ -499,16 +363,12 @@
                           </span>
                         </v-list-item-content>
                         <v-list-item-content v-else-if="item.damage.status == 'on progress'"
-                          class="item-content defects">
+                          class="item-content defects" @click="defectedFunction(item, i)">
                           <span v-if="item.important == false">
-
-                            <v-list-item-title name="damageTypesTEC" class="itemName">
-                              <v-icon>{{ item.icon }}</v-icon>
-                            </v-list-item-title>
-                            <v-list-item-subtitle class="itemSubtitle">
-                              <span>{{ item.name }}</span>
-                            </v-list-item-subtitle>
-
+                            <v-list-item-title name="damageTypesTEC" class="itemName"
+                              style="background-color: #f54"></v-list-item-title>
+                            <v-list-item-subtitle style="color: #f54" class="itemSubtitle">{{ item.name
+                              }}</v-list-item-subtitle>
                           </span>
                           <span v-if="item.important == true">
                             <v-list-item-title name="damageTypesTEC" class="itemName"
@@ -519,46 +379,6 @@
                               " class="itemSubtitle">{{ item.name }}</v-list-item-subtitle>
                           </span>
                         </v-list-item-content>
-                        <span class="defect_details_counts" v-if="item.name == 'OTHER'">
-                          <span>T : {{ item.damageTypes.length - 1 }}</span>
-                          <span>D : {{ item.countDefective }}</span>
-                          <span>R : {{ item.countResolved }}</span>
-                        </span>
-                      </v-list-item>
-                      <v-list-item
-                        v-for="(item, i) in damageTypesIT.filter(e => e.name == 'OTHER' && e.damage_type_id == null)"
-                        :key="i" class="item" two-line
-                        :class="MasterIsChecked(item) ? 'defect_active' : 'defect_intact'"
-                        @click="valider_cmt_first(item, i)" style="    border-bottom: 1px solid #25204f1a;
-                                    padding-bottom: 9px;
-                                    border-bottom-left-radius: 24px;
-                                    border-bottom-right-radius: 24px;">
-                        <v-list-item-content class="item-content">
-                          <span v-if="item.important == false">
-                            <v-list-item-title name="damageTypesTEC" class="itemName">
-                              <v-icon>{{ item.icon }}</v-icon>
-                            </v-list-item-title>
-                            <v-list-item-subtitle class="itemSubtitle">
-                              <span>{{
-                                item.name }}</span>
-
-                            </v-list-item-subtitle>
-                          </span>
-                          <span v-else-if="item.important == true">
-                            <v-list-item-title name="damageTypesTEC" class="itemName"
-                              style="background-color: #76ba99"></v-list-item-title>
-                            <v-list-item-subtitle class="itemSubtitle" style="
-                                color: rgb(0, 171, 88);
-                                font-weight: bolder !important;
-                                width: 170px !important;
-                              ">{{ item.name }}</v-list-item-subtitle>
-                          </span>
-                        </v-list-item-content>
-                        <span class="defect_details_counts">
-                          <span>T : {{ item.damageTypes.length }}</span>
-                          <span>D : {{ item.countDefective }}</span>
-                          <span>R : {{ item.countResolved }}</span>
-                        </span>
                       </v-list-item>
                     </div>
                   </v-list-item-group>
@@ -568,45 +388,25 @@
           </v-row>
           <v-row class="d-flex justify-center">
             <v-col cols="4">
-              <v-sheet color="#d43737" elevation="1" height="20" width="20" rounded></v-sheet>
-              Defective
+              <v-sheet color="#f54" elevation="1" height="20" width="20" rounded></v-sheet>
+              Defected
             </v-col>
             <v-col cols="4">
-              <v-sheet color="#fb8500" elevation="1" height="20" width="20" rounded></v-sheet>
+              <v-sheet color="#FF8F56" elevation="1" height="20" width="20" rounded></v-sheet>
               Resolved
             </v-col>
             <v-col cols="3">
-              <v-sheet color="rgb(21, 40, 85)" elevation="1" height="20" width="20" rounded></v-sheet>
-              Not-Defective
+              <v-sheet color="#76ba99" elevation="1" height="20" width="20" rounded></v-sheet>
+              Not-Defected
             </v-col>
           </v-row>
         </v-container>
         <v-container>
           <v-row>
             <v-col class="d-flex justify-center" cols="12">
-              <v-btn
-              
-              v-if="
-              countResolvedTEC>0 ||
-              countResolved>0 
-              
-              "
-              depressed style="font-weight: 900; background-color: rgb(73 114 209); color: white; width: 250px;"
-                color="" :disabled="true" >
-                STILL {{ countResolvedTEC+countResolved }} RESOLVED DEFECTS !
+              <v-btn depressed color="primary" :disabled="disabled" @click="test()">
+                Valider
               </v-btn>
-              <v-btn 
-              v-else
-              depressed style="font-weight: 900; background-color: rgb(73 114 209); color: white; width: 250px;"
-                color="" :disabled="disabled" @click="test()">
-                FINISH CHECKLIST
-              </v-btn>
-            </v-col>
-            <v-col class="d-flex justify-center" cols="12"
-              style="user-select: none;margin: 0; padding: 0; margin-top: -9px; color: #00000054;">
-              <span style="display: block;">Note: Clicking 'Finish' will submit your checklist. Please review all items
-                before
-                submitting.</span>
             </v-col>
           </v-row>
         </v-container>
@@ -630,14 +430,13 @@ export default {
     LoadingPage,
   },
   data: () => ({
-    countMineId: 0,
     cmt_actual_pic_edit: false,
     cmt_actual_pic_delete: false,
     cmt_actual_pic: null,
     defectList: [],
     damageTech_cmt_payload: {
       comment: "",
-      files: []
+      pics: []
     },
     damageTech_cmt_fullscreen_img: false,
     damageTech_cmt: false,
@@ -913,29 +712,16 @@ export default {
     this.initialize();
   },
   methods: {
-    openProfileGroupSelect() {
-      if (this.$refs.profileGroupSelect) {
-        this.$refs.profileGroupSelect.menu = true;
-        if (typeof this.$refs.profileGroupSelect.activateMenu === 'function') {
-          this.$refs.profileGroupSelect.activateMenu();
-        }
-      }
-    },
-    openProfileGroupSelect_2() {
-      if (this.$refs.profileGroupSelect_2) {
-        this.$refs.profileGroupSelect_2.menu = true;
-        if (typeof this.$refs.profileGroupSelect_2.activateMenu === 'function') {
-          this.$refs.profileGroupSelect_2.activateMenu();
-        }
-      }
-    },
     cmt_actual_pic_edit_open(item) {
+      console.log("cmt_actual_pic_edit_open : item", item);
       this.selected_sub_Defect = item;
 
       this.cmt_actual_pic_edit = true;
     },
     deleteImage() {
-      this.damageTech_cmt_payload.files = this.damageTech_cmt_payload.files.filter((e) => {
+      console.log("this.damageTech_cmt_payload :", this.damageTech_cmt_payload);
+      console.log("selected_sub_Defect :", this.selected_sub_Defect);
+      this.damageTech_cmt_payload.pics = this.damageTech_cmt_payload.pics.filter((e) => {
         return e.name != this.cmt_actual_pic.name;
       });
       this.cmt_actual_pic_delete = false;
@@ -964,7 +750,7 @@ export default {
       const file = event.target.files[0];
       if (file) {
         // handle your file upload logic here
-        this.damageTech_cmt_payload.files.push(file);
+        this.damageTech_cmt_payload.pics.push(file);
       }
     },
     test() {
@@ -979,10 +765,11 @@ export default {
           this.dialogValideDamage = false;
         } else {
           swal({
-            title: "Click YES",
-            text: "if you want validate your checklist !",
+            title: "Are you sure?",
+            text: "you want make checklist !",
+            icon: "warning",
             buttons: true,
-            dangerMode: false,
+            dangerMode: true,
           }).then((willDelete) => {
             if (willDelete) {
               this.presenceCheck.user_id = this.getUserActive.id;
@@ -1006,116 +793,38 @@ export default {
       this.cmt_actual_pic = pic;
     },
     techDefects_withCmt(item) {
-      this.damageTech_cmt_payload = {
-        comment: "",
-        files: []
-      };
+      console.log("techDefects_withCmt first one :", item)
       this.selected_sub_Defect = item;
       if (item.damageTech_cmt_payload) {
-        this.damageTech_cmt_payload = {
-          comment: "",
-          files: []
-        };
-        if (item.name != "Other & comment") {
-          this.damageTech_cmt_payload.comment = item.damageTech_cmt_payload.comment;
-          this.damageTech_cmt_payload.files = item.damageTech_cmt_payload.files;
-        }
-
+        this.damageTech_cmt_payload = item.damageTech_cmt_payload;
       }
       else {
-
+        item.damageTech_cmt_payload = this.damageTech_cmt_payload;
         this.damageTech_cmt_payload = {
           comment: "",
-          files: []
+          pics: []
         };
-        item.damageTech_cmt_payload = this.damageTech_cmt_payload;
       }
       this.damageTech_cmt = true;
 
       //this.valider_2(item)
     },
     techDefects_withCmt_confirm() {
-      let foundMasterDamage = null;
-      console.log("this.selected_sub_Defect first ", this.selected_sub_Defect);
+      console.log("this.selected_sub_Defect second ", this.selected_sub_Defect);
       this.selected_sub_Defect.damageTech_cmt_payload = this.damageTech_cmt_payload;
-      if (this.selected_sub_Defect?.name == "Other & comment" && this.selected_sub_Defect.department_id == 1) {
-        for (let index = 0; index < this.damageTypesIT.length; index++) {
-          if (this.damageTypesIT[index].id == this.selected_sub_Defect?.damage_type_master.id) {
-            foundMasterDamage = this.damageTypesIT[index];
-            this.countMineId--;
-            this.selected_sub_Defect = {
-              "id": this.countMineId,
-              "name": this.selected_sub_Defect?.damageTech_cmt_payload.comment,
-              "important": 0,
-              "profile_group_id": this.selected_sub_Defect?.profile_group_id,
-              "department_id": this.selected_sub_Defect?.department_id,
-              "created_at": "25\/05\/2025 11:12",
-              "updated_at": "25\/05\/2025 11:12",
-              "damage_type_id": this.selected_sub_Defect?.damageType_master.id,
-              "icon": null,
-              "damage": null,
-              "damageType_master": this.selected_sub_Defect?.damageType_master,
-              "profile_group": this.selected_sub_Defect?.profile_group,
-              "department": this.selected_sub_Defect?.department,
-              "damage_type_master": this.selected_sub_Defect?.damage_type_master,
-              "damageTech_cmt_payload": this.selected_sub_Defect?.damageTech_cmt_payload,
-              damage_master_id: this.selected_sub_Defect?.damageType_master.id,
-            };
-            this.damageTypesIT[index].damageTypes.push(
-              this.selected_sub_Defect
-            );
-          }
-
-        }
-      }
-      else if (this.selected_sub_Defect?.name == "Other & comment" && this.selected_sub_Defect.department_id == 2) {
-        for (let index = 0; index < this.damageTypesTEC.length; index++) {
-          if (this.damageTypesTEC[index].id == this.selected_sub_Defect?.damage_type_master.id) {
-            foundMasterDamage = this.damageTypesTEC[index];
-            this.countMineId--;
-            this.selected_sub_Defect = {
-              "id": this.countMineId,
-              "name": this.selected_sub_Defect?.damageTech_cmt_payload.comment,
-              "important": 0,
-              "profile_group_id": this.selected_sub_Defect?.profile_group_id,
-              "department_id": this.selected_sub_Defect?.department_id,
-              "created_at": "25\/05\/2025 11:12",
-              "updated_at": "25\/05\/2025 11:12",
-              "damage_type_id": this.selected_sub_Defect?.damageType_master.id,
-              "icon": null,
-              "damage": null,
-              "damageType_master": this.selected_sub_Defect?.damageType_master,
-              "profile_group": this.selected_sub_Defect?.profile_group,
-              "department": this.selected_sub_Defect?.department,
-              "damage_type_master": this.selected_sub_Defect?.damage_type_master,
-              "damageTech_cmt_payload": this.selected_sub_Defect?.damageTech_cmt_payload,
-              damage_master_id: this.selected_sub_Defect?.damageType_master.id,
-            };
-            this.damageTypesTEC[index].damageTypes.push(
-              this.selected_sub_Defect
-            );
-          }
-
-        }
-      }
       this.valider_2(this.selected_sub_Defect);
       this.damageTech_cmt = false;
       this.damageTech_cmt_payload = {
         comment: "",
-        files: []
+        pics: []
       };
-      console.log("this.selected_sub_Defect ", this.selected_sub_Defect);
-      console.log("foundMasterDamage ", foundMasterDamage);
-      if (this.selected_sub_Defect?.damage_type_master.name == "OTHER" && foundMasterDamage?.damageTypes.length == 2) {
-        console.log("dkhl.")
-        this.valider_cmt_first_confirm();
-      }
+
     },
     techDefects_withCmt_close() {
       this.damageTech_cmt = false;
       this.damageTech_cmt_payload = {
         comment: "",
-        files: []
+        pics: []
       };
     },
     changeProfile_groupeSELECT() {
@@ -1138,12 +847,8 @@ export default {
       if (count == 0) {
         this.equipmentsFiltre = [];
       }
-      setTimeout(()=>{
-        this.openProfileGroupSelect_2();
-      },0)
     },
     changeEquipmentsFiltreSELECT() {
-      this.LoadingPage=true;
       var IT = this.departmentIT.id;
       var TEC = this.departmentTEC.id;
       this.modelDamageTEC = [];
@@ -1170,184 +875,68 @@ export default {
         this.damageTypesTEC = this.DamagesMergedWithDamageTypes.filter(
           (c) => c.department_id == TEC
         );
-        this.damageTypesTEC = this.damageTypesTEC.filter((u) => u.damage_type_id == null).map((e) => {
+        this.damageTypesTEC = this.damageTypesTEC.map((e) => {
           e.isSelected = false;
           e.damageTech_cmt_payload = {
             comment: "",
-            files: []
+            pics: []
           }
           return e;
-        });
-
+        })
         this.damageTypesIT = this.DamagesMergedWithDamageTypes.filter(
           (c) => c.department_id == IT
         );
-        this.damageTypesIT = this.damageTypesIT.filter((u) => u.damage_type_id == null).map((e) => {
-          if (e.name != "OTHER") {
-            e.isSelected = false;
-            return e;
-          }
-          else {
-            e.isSelected = false;
-            e.damageTech_cmt_payload = {
-              comment: "",
-              files: []
-            }
-            return e;
-          }
-
+        this.damageTypesIT = this.damageTypesIT.map((e) => {
+          e.isSelected = false;
+          return e;
         })
-
-        this.countReset();
-        this.LoadingPage=false;
-      }).catch(()=>{
-        this.LoadingPage=false;
-      });
-
-    },
-    countReset() {
-      this.countDefects = 0;
-      this.countResolved = 0;
-      this.countDefectsTEC = 0;
-      this.countResolvedTEC = 0;
-      this.countImportantTEC = 0;
-      this.countImportantIT = 0;
-      this.damageTypesIT.map((e) => {
-        if (e.name != "OTHER") {
+        this.countDefects = 0;
+        this.countResolved = 0;
+        this.countDefectsTEC = 0;
+        this.countResolvedTEC = 0;
+        this.countImportantTEC = 0;
+        this.countImportantIT = 0;
+        this.damageTypesIT.map((e) => {
           if (e.damage == null) {
-            if (this.Data.filter((b) => {
-              return b.damage_type_id == e.id;
-            }).length > 0) {
-              this.countDefects = this.countDefects + 1;
-              e.countDefective = e.countDefective + 1;
-              if (e.important == true) {
-                this.countImportantIT = this.countImportantIT + 1;
-                e.countImportantDefective = e.countImportantDefective + 1;
-              }
-
-            }
-          } else if (e.damage.status == "on progress" || this.Data.filter((b) => {
-            return b.id == e.id;
-          }).length > 0) {
+          } else if (e.damage.status == "on progress") {
             this.countDefects = this.countDefects + 1;
             if (e.important == true) {
               this.countImportantIT = this.countImportantIT + 1;
-              e.countImportantDefective = e.countImportantDefective + 1;
-
+              swal(
+                "warning !",
+                "There are some elements that are important for the operation of this Equipment" +
+                ` ${this.EquipmentName[0].name}`,
+                "warning"
+              );
             }
           } else if (e.damage.status == "resolved") {
             this.countResolved = this.countResolved + 1;
           }
-        }
-        else {
-          e.countImportantDefective = 0;
-          e.countDefective = 0;
-          e.countResolved = 0;
-          e.damageTypes.map((c) => {
+        });
+        this.damageTypesTEC.map((e) => {
+          e.damageTypes.map((c)=>{
             if (c.damage == null) {
-              if (this.Data.filter((b) => {
-                return b.damage_type_id == c.id;
-              }).length > 0) {
-                this.countDefects = this.countDefects + 1;
-                e.countDefective = e.countDefective + 1;
-                if (c.important == true) {
-                  this.countImportantIT = this.countImportantIT + 1;
-                  e.countImportantDefective = e.countImportantDefective + 1;
-                }
-
-              }
-            } else if (c.damage.status == "on progress" || this.Data.filter((b) => {
-              return b.id == c.id;
-            }).length > 0) {
-              this.countDefects = this.countDefects + 1;
-              e.countDefective = e.countDefective + 1;
-              if (c.important == true) {
-                this.countImportantIT = this.countImportantIT + 1;
-                e.countImportantDefective = e.countImportantDefective + 1;
-
-              }
-            } else if (c.damage.status == "resolved") {
-              this.countResolved = this.countResolved + 1;
-              e.countResolved = e.countResolved + 1;
-            }
-
-            return c;
-          })
-          return e;
-        }
-
-
-      });
-      this.damageTypesTEC = this.damageTypesTEC.map((e) => {
-        e.countImportantDefective = 0;
-        e.countDefective = 0;
-        e.countResolved = 0;
-        e.damageTypes.map((c) => {
-          if (c.damage == null) {
-            if (this.Data.filter((b) => {
-              return b.damage_type_id == c.id;
-            }).length > 0) {
+            } else if (c.damage.status == "on progress") {
               this.countDefectsTEC = this.countDefectsTEC + 1;
-              e.countDefective = e.countDefective + 1;
               if (c.important == true) {
                 this.countImportantTEC = this.countImportantTEC + 1;
-                e.countImportantDefective = e.countImportantDefective + 1;
+                swal(
+                  "warning !",
+                  "There are some elements that are important for the operation of this Equipment" +
+                  ` ${this.EquipmentName[0].name}`,
+                  "warning"
+                );
               }
-
+            } else if (c.damage.status == "resolved") {
+              this.countResolvedTEC = this.countResolvedTEC + 1;
             }
-          } else if (c.damage.status == "on progress" || this.Data.filter((b) => {
-            return b.id == c.id;
-          }).length > 0) {
-            this.countDefectsTEC = this.countDefectsTEC + 1;
-            e.countDefective = e.countDefective + 1;
-            if (c.important == true) {
-              this.countImportantTEC = this.countImportantTEC + 1;
-              e.countImportantDefective = e.countImportantDefective + 1;
-            }
-          } else if (c.damage.status == "resolved") {
-            this.countResolvedTEC = this.countResolvedTEC + 1;
-            e.countResolved = e.countResolved + 1;
-          }
-
-          return c;
-        })
-        return e;
+            })
+        });
       });
+
     },
     initialize() {
-      this.LoadingPage = true;
-      this.setPROFILEDROUPSAction_by_user(this.getUserActive.id).then((response) => {
-
-        console.log("response :", this.getprofilegroups);
-        if (this.getprofilegroups == 0) {
-          swal("warning !!", "You don't have any group !", "warning");
-          this.disabled = true;
-          // this.profile_groupe = [...this.getprofilegroups];
-        } else {
-          this.profile_groupe = [...this.getprofilegroups];
-        }
-
-        this.getprofilegroups.map((t) => {
-          t.equipments.map((z) => {
-            this.equipments.push(z);
-          })
-        })
-
-        this.department = [...response.departments];
-        this.department.map((item) => {
-          if (item.name.toLowerCase() == "technique") {
-            this.departmentTEC = item;
-          }
-          if (item.name.toLowerCase() == "it") {
-            this.departmentIT = item;
-          }
-          if (item.name.toLowerCase() == "operations") {
-            this.departmentOP = item;
-          }
-        });
-
-
-        /*
+      this.setPROFILEDROUPSAction().then(() => {
         this.setUsersbyIDAction(this.getUserActive.id).then(() => {
           this.userFiltre = this.getUsers;
           if (this.userFiltre.profileGroups.length == 0) {
@@ -1358,13 +947,7 @@ export default {
             this.profile_groupe = [...this.userFiltre.profileGroups];
           }
         });
-        */
-        this.LoadingPage = false;
-        this.openProfileGroupSelect();
-      }).catch((r) => {
-        this.LoadingPage = false;
-      })
-      /*
+      });
       this.setequipmentsAction().then(() => {
         this.equipments = [...this.getequipments];
       });
@@ -1382,7 +965,6 @@ export default {
           }
         });
       });
-      */
     },
     ...mapActions([
       "setDAMAGEAction",
@@ -1405,7 +987,6 @@ export default {
       "setequipmentsByIDAction",
       "SendEmailAction",
       "closeDamageAction_2",
-      "setPROFILEDROUPSAction_by_user",
     ]),
     isChecked(item) {
       let isCheck = false;
@@ -1434,17 +1015,6 @@ export default {
       return isCheck;
     },
     valider_cmt_first(item, i) {
-      console.log("item :", item)
-      if (item.name == "OTHER") {
-        if (item.damageTypes.length == 1) {
-          item.isSelected = true;
-          this.damageTech_cmt_payload = item.damageTech_cmt_payload;
-          this.selectedDefect = item;
-          this.defectList = item.damageTypes;
-          this.techDefects_withCmt(item.damageTypes[0]);
-          return;
-        }
-      }
       this.driver_comment_dialog = true;
 
       item.isSelected = true;
@@ -1463,15 +1033,8 @@ export default {
       this.selectedDefect = null;
       this.Data_2.map((e) => {
         this.Data.push(e);
-
       });
-
-      this.Data_2 = [];
-      this.countReset();
-      this.damageTech_cmt_payload = {
-        comment: "",
-        files: []
-      };
+      this.Data_2=[];
     },
     valider_cmt_first_cancel() {
       this.driver_comment_dialog = false;
@@ -1496,6 +1059,7 @@ export default {
       this.selectedDefect = null;
     },
     valider(item, i) {
+
       this.damageCourent.declaredBy_id = this.getUserActive.id;
       this.damageCourent.damage_type_id = item.id;
       this.damageCourent.equipment_id = this.equipments_id;
@@ -1524,7 +1088,6 @@ export default {
             equipment_id: null,
             damage_type_id: null,
             department_id: null,
-            damage_master_id: null,
             shift: "",
           };
           Damage.declaredBy_id = this.getUserActive.id;
@@ -1532,8 +1095,8 @@ export default {
           Damage.equipment_id = this.equipments_id;
           Damage.shift = this.getActualShift();
           Damage.department_id = item.department_id;
-          Damage.damage_master_id = item.damage_master_id,
-            this.damageSelect.push(Damage);
+          this.damageSelect.push(Damage);
+
           this.Data.push(Damage);
         } else {
           var Damage = {
@@ -1541,15 +1104,13 @@ export default {
             equipment_id: null,
             damage_type_id: null,
             department_id: null,
-            damage_master_id: null,
             shift: "",
           };
           Damage.declaredBy_id = this.getUserActive.id;
           Damage.damage_type_id = this.damage_type_id;
           Damage.equipment_id = this.equipments_id;
           Damage.department_id = item.department_id;
-          Damage.damage_master_id = item.damage_master_id,
-            Damage.shift = this.getActualShift();
+          Damage.shift = this.getActualShift();
 
           this.damageSelect.push(Damage);
 
@@ -1577,15 +1138,13 @@ export default {
               equipment_id: null,
               damage_type_id: null,
               department_id: null,
-              damage_master_id: null,
               shift: "",
             };
             Damage.declaredBy_id = this.getUserActive.id;
             Damage.damage_type_id = this.damage_type_id;
             Damage.equipment_id = this.equipments_id;
             Damage.department_id = item.department_id;
-            Damage.damage_master_id = item.damage_master_id,
-              Damage.shift = this.getActualShift();
+            Damage.shift = this.getActualShift();
 
             this.damageSelect.push(Damage);
 
@@ -1596,7 +1155,6 @@ export default {
               equipment_id: null,
               damage_type_id: null,
               department_id: null,
-              damage_master_id: null,
               shift: "",
             };
             Damage.declaredBy_id = this.getUserActive.id;
@@ -1604,14 +1162,12 @@ export default {
             Damage.equipment_id = this.equipments_id;
             Damage.department_id = item.department_id;
             Damage.shift = this.getActualShift();
-            Damage.damage_master_id = item.damage_master_id,
-              this.damageSelect.push(Damage);
+            this.damageSelect.push(Damage);
 
             this.Data.push(Damage);
           }
         }
       }
-      this.countReset();
     },
     valider_2(item) {
 
@@ -1664,10 +1220,9 @@ export default {
             damage_type_id: null,
             department_id: null,
             shift: "",
-            damage_master_id: null,
             damageTech_cmt_payload: {
               comment: "",
-              files: []
+              pics: []
             }
           };
           Damage.declaredBy_id = this.getUserActive.id;
@@ -1676,8 +1231,8 @@ export default {
           Damage.department_id = item.department_id;
           Damage.shift = this.getActualShift();
           Damage.damageTech_cmt_payload = item.damageTech_cmt_payload;
-          Damage.damage_master_id = item.damage_master_id,
-            this.damageSelect.push(Damage);
+
+          this.damageSelect.push(Damage);
 
           this.Data_2.push(Damage);
         } else {
@@ -1687,10 +1242,9 @@ export default {
             damage_type_id: null,
             department_id: null,
             shift: "",
-            damage_master_id: null,
             damageTech_cmt_payload: {
               comment: "",
-              files: []
+              pics: []
             }
           };
           Damage.declaredBy_id = this.getUserActive.id;
@@ -1699,8 +1253,7 @@ export default {
           Damage.department_id = item.department_id;
           Damage.shift = this.getActualShift();
           Damage.damageTech_cmt_payload = item.damageTech_cmt_payload;
-          Damage.damage_master_id = item.damage_master_id,
-            this.damageSelect.push(Damage);
+          this.damageSelect.push(Damage);
 
           this.Data_2.push(Damage);
         }
@@ -1726,10 +1279,9 @@ export default {
               damage_type_id: null,
               department_id: null,
               shift: "",
-              damage_master_id: null,
               damageTech_cmt_payload: {
                 comment: "",
-                files: []
+                pics: []
               }
             };
             Damage.declaredBy_id = this.getUserActive.id;
@@ -1738,8 +1290,7 @@ export default {
             Damage.department_id = item.department_id;
             Damage.shift = this.getActualShift();
             Damage.damageTech_cmt_payload = item.damageTech_cmt_payload;
-            Damage.damage_master_id = item.damage_master_id,
-              this.damageSelect.push(Damage);
+            this.damageSelect.push(Damage);
 
             this.Data_2.push(Damage);
           } else {
@@ -1751,9 +1302,8 @@ export default {
               shift: "",
               damageTech_cmt_payload: {
                 comment: "",
-                files: []
-              },
-              damage_master_id: null,
+                pics: []
+              }
             };
             Damage.declaredBy_id = this.getUserActive.id;
             Damage.damage_type_id = this.damage_type_id;
@@ -1762,8 +1312,7 @@ export default {
             Damage.shift = this.getActualShift();
             this.damageSelect.push(Damage);
             Damage.damageTech_cmt_payload = item.damageTech_cmt_payload;
-            Damage.damage_master_id = item.damage_master_id,
-              this.Data_2.push(Damage);
+            this.Data_2.push(Damage);
           }
         } else {
           if (item.important == true) {
@@ -1781,7 +1330,7 @@ export default {
               shift: "",
               damageTech_cmt_payload: {
                 comment: "",
-                files: []
+                pics: []
               }
             };
             Damage.declaredBy_id = this.getUserActive.id;
@@ -1790,8 +1339,7 @@ export default {
             Damage.department_id = item.department_id;
             Damage.shift = this.getActualShift();
             Damage.damageTech_cmt_payload = item.damageTech_cmt_payload;
-            Damage.damage_master_id = item.damage_master_id,
-              this.damageSelect.push(Damage);
+            this.damageSelect.push(Damage);
 
             this.Data_2.push(Damage);
           } else {
@@ -1803,24 +1351,20 @@ export default {
               shift: "",
               damageTech_cmt_payload: {
                 comment: "",
-                files: []
-              },
-              damage_master_id: null,
+                pics: []
+              }
             };
             Damage.declaredBy_id = this.getUserActive.id;
             Damage.damage_type_id = this.damage_type_id;
             Damage.equipment_id = this.equipments_id;
             Damage.department_id = item.department_id;
             Damage.shift = this.getActualShift();
-            Damage.damage_master_id = item.damage_master_id,
-              this.damageSelect.push(Damage);
+            this.damageSelect.push(Damage);
             Damage.damageTech_cmt_payload = item.damageTech_cmt_payload;
             this.Data_2.push(Damage);
           }
         }
       }
-
-
     },
     valider_3(item) {
 
@@ -1842,7 +1386,7 @@ export default {
       if (this.Data.length > 0) {
         this.isvalide = false;
         this.Data.map((e) => {
-          if (e.damage_type_id == item.id) {
+          if (e.damage_type_id == this.damage_type_id) {
             this.isvalide = true;
           }
         });
@@ -1851,48 +1395,131 @@ export default {
 
         }
       }
-      if (this.Data_2.length > 0) {
+
+
+
+
+
+
+
+      if (this.Data_2.length == 0) {
+        if (item.important == true) {
+          swal(
+            "warning !",
+            "this item " +
+            `*** ${item.name} *** ` +
+            " must be immediately reported to the hierarchy ",
+            "warning"
+          );
+          var Damage = {
+            declaredBy_id: null,
+            equipment_id: null,
+            damage_type_id: null,
+            department_id: null,
+            shift: "",
+            damageTech_cmt_payload: {
+              comment: "",
+              pics: []
+            }
+          };
+          Damage.declaredBy_id = this.getUserActive.id;
+          Damage.damage_type_id = this.damage_type_id;
+          Damage.equipment_id = this.equipments_id;
+          Damage.department_id = item.department_id;
+          Damage.shift = this.getActualShift();
+          Damage.damageTech_cmt_payload = item.damageTech_cmt_payload;
+          this.damageSelect.push(Damage);
+
+          this.Data_2.push(Damage);
+        } else {
+          var Damage = {
+            declaredBy_id: null,
+            equipment_id: null,
+            damage_type_id: null,
+            department_id: null,
+            shift: "",
+            damageTech_cmt_payload: {
+              comment: "",
+              pics: []
+            }
+          };
+          Damage.declaredBy_id = this.getUserActive.id;
+          Damage.damage_type_id = this.damage_type_id;
+          Damage.equipment_id = this.equipments_id;
+          Damage.department_id = item.department_id;
+          Damage.shift = this.getActualShift();
+          Damage.damageTech_cmt_payload = item.damageTech_cmt_payload;
+          this.damageSelect.push(Damage);
+
+          this.Data_2.push(Damage);
+        }
+      } else if (this.Data_2.length > 0) {
         this.isvalide = false;
         this.Data_2.map((e) => {
-          if (e.damage_type_id == item.id) {
+          if (e.damage_type_id == this.damage_type_id) {
             this.isvalide = true;
           }
         });
         if (this.isvalide == true) {
           this.Data_2 = this.Data_2.filter((c) => c.damage_type_id != item.id);
+        } else {
+          if (item.important == true) {
+            swal(
+              "warning !",
+              `*** ${item.name} *** ` +
+              " must be immediately reported to the hierarchy ",
+              "warning"
+            );
+            var Damage = {
+              declaredBy_id: null,
+              equipment_id: null,
+              damage_type_id: null,
+              department_id: null,
+              shift: "",
+              damageTech_cmt_payload: {
+                comment: "",
+                pics: []
+              }
+            };
+            Damage.declaredBy_id = this.getUserActive.id;
+            Damage.damage_type_id = this.damage_type_id;
+            Damage.equipment_id = this.equipments_id;
+            Damage.department_id = item.department_id;
+            Damage.shift = this.getActualShift();
+            Damage.damageTech_cmt_payload = item.damageTech_cmt_payload;
+            this.damageSelect.push(Damage);
 
+            this.Data_2.push(Damage);
+          } else {
+            var Damage = {
+              declaredBy_id: null,
+              equipment_id: null,
+              damage_type_id: null,
+              department_id: null,
+              shift: "",
+              damageTech_cmt_payload: {
+                comment: "",
+                pics: []
+              }
+            };
+            Damage.declaredBy_id = this.getUserActive.id;
+            Damage.damage_type_id = this.damage_type_id;
+            Damage.equipment_id = this.equipments_id;
+            Damage.department_id = item.department_id;
+            Damage.shift = this.getActualShift();
+            this.damageSelect.push(Damage);
+            Damage.damageTech_cmt_payload = item.damageTech_cmt_payload;
+            this.Data_2.push(Damage);
+          }
         }
       }
-
-      if (this.selectedDefect?.damageTypes.length == 1
-        && this.selected_sub_Defect?.damage_type_master.name == 'OTHER') {
-        this.valider_cmt_first_confirm();
-
-        this.damageTech_cmt = false;
-
-      }
-
-
-
-
-
-
-
     },
     resolvedFunction(item) {
-      this.damageTech_cmt_payload = {
-        comment: "",
-        files: []
-      };
       this.resolveditem = [];
       this.resolvedDialoge = true;
       this.resolveditem.push(item);
     },
     defectedFunction(item) {
-      this.damageTech_cmt_payload = {
-        comment: "",
-        files: []
-      };
       this.resolveditem = [];
       this.defectedDialoge = true;
       this.resolveditem.push(item);
@@ -1925,83 +1552,82 @@ export default {
       formData.append(`damages[id]`, this.closeDamage.id);
       formData.append(`damages[closedBy_id]`, this.closeDamage.closedBy_id);
       formData.append(`damages[damageTech_cmt_payload][comment]`, this.damageTech_cmt_payload.comment);
-      this.damageTech_cmt_payload.files.forEach((picFile, picIndex) => {
-        formData.append(`damages[damageTech_cmt_payload][files][${picIndex}]`, picFile);
+      this.damageTech_cmt_payload.pics.forEach((picFile, picIndex) => {
+        formData.append(`damages[damageTech_cmt_payload][pics][${picIndex}]`, picFile);
       });
-      if (this.closeDamage.id < 0) {
-        console.log("this.closeDamage :", this.closeDamage);
-        console.log("this.resolveditem[0] :", this.resolveditem[0]);
-      }
+      
+      console.log("this.damageTech_cmt_payload :",this.damageTech_cmt_payload);
+      console.log("this.getUserActive :",this.getUserActive);
+      console.log("this.resolveditem :",this.resolveditem);
       this.closeDamageAction_2(formData)
         .then((resolve) => {
-          this.damageTech_cmt_payload = {
+        // this.EmailModel.payload.Equipment = this.EquipmentName[0].name;
+        // this.EmailModel.status = "Closed ";
+        // this.EmailModel.payload.EquipmentGroupe =
+        //   this.resolveditem[0].department.name;
+        // this.EmailModel.payload.Defects = resolve.damage_type.name;
+        // this.EmailModel.payload.Status = "closed";
+        // this.EmailModel.email =
+        //   this.departmentOP.email.toString() +
+        //   this.resolveditem[0].department.email.toString();
+        // this.EmailModel.payload.ClosedBy = this.getUserActive.username;
+        // this.EmailModel.payload.ClosedAt = resolve.declaredAt;
+        // if (resolve.driver_out != null) {
+        //   this.EmailModel.payload.DriverOut = resolve.driver_out.username;
+        // } else {
+        // }
+        // this.EmailModel.payload.DeclaredBy = resolve.declared_by.username;
+        // this.EmailModel.payload.DeclaredAt = resolve.declaredAt;
+
+        // this.SendEmailAction(this.EmailModel).then(() => {
+        // });
+          // this.LoadingPage = true;
+          this.damageTech_cmt_payload={
             comment: "",
-            files: []
+            pics: []
           };
+          console.log("kdkdkdkd",this.resolveditem[0])
+          console.log("this.damageTypesTEC :",this.damageTypesTEC);
           this.defectedDialoge = false;
           this.modelTEC = [];
           this.modelIT = [];
-          this.defectedDialoge = false;
-          this.resolvedDialoge = false;
-          this.damageTypesTEC = this.damageTypesTEC.map((e) => {
-            let isChecked = false;
-            e.damageTypes = e.damageTypes.map((c) => {
-              if (c.id == this.resolveditem[0].id) {
-                c.damage = null;
+          this.defectedDialoge=false;
+          this.resolvedDialoge=false;
+          this.damageTypesTEC=this.damageTypesTEC.map((e)=>{
+            let isChecked=false;
+            e.damageTypes=e.damageTypes.map((c)=>{
+              if(c.id==this.resolveditem[0].id){
+                c.damage=null;
               }
 
-              if (c.damage != null)
-                isChecked = true;
-
+              if(c.damage!=null)
+                isChecked=true;
+              
               return c;
             });
-            e.damage = isChecked;
+            e.damage=isChecked;
             return e;
           });
-          console.log("dkhl.",this.damageTypesIT)
-          console.log("this.resolveditem[0].",this.resolveditem[0])
-          this.damageTypesIT = this.damageTypesIT.map((e) => {
-            if (e.name != "OTHER") {
-              let isChecked = false;
-              if (e.id == this.resolveditem[0].id) {
-                e.damage = null;
+          this.damageTypesIT=this.damageTypesIT.map((c)=>{
+            let isChecked=false;
+            if(c.id==this.resolveditem[0].id){
+                c.damage=null;
               }
-              return e;
-            }
-            else {
-              let isChecked = false;
-              e.damageTypes = e.damageTypes.map((c) => {
-                if (c.id == this.resolveditem[0].id) {
-                  c.damage = null;
-                }
-
-                if (c.damage != null)
-                  isChecked = true;
-
-                return c;
-              });
-              e.damage = isChecked;
-              return e;
-            }
-
+            return c;
           });
-          console.log("dkhl.",this.damageTypesIT)
-          this.countReset();
-          console.log("daz.")
-          if (this.resolveditem[0]?.department_id!=1 && this.resolveditem[0]?.damage_type_master.name == "OTHER") {
-            console.log("dkhl.")
-            this.valider_cmt_first_confirm();
-          }
+          
+          
           this.resolveditem = [];
           this.LoadingPage = false;
           swal("Good job!", "success", "success");
-
+          
           //this.$router.go();
         })
         .catch(() => {
-          swal("Error", "", "error");
+          swal("Error hna", "", "error");
         });
-
+         console.log("hna :",this.damageTypesTEC);
+      
     },
     closed() {
       this.closeDamage.id = this.resolveditem[0].damage.id;
@@ -2010,7 +1636,7 @@ export default {
         .then((resolve) => {
           //this.EmailModel.payload.Equipment = this.EquipmentName[0].name;
           //this.EmailModel.status = "Closed ";
-          //
+//
           //this.EmailModel.payload.EquipmentGroupe =
           //  this.resolveditem[0].department.name;
           //this.EmailModel.payload.Defects = resolve.damage_type.name;
@@ -2018,7 +1644,7 @@ export default {
           //this.EmailModel.email =
           //  this.departmentOP.email.toString() +
           //  this.resolveditem[0].department.email.toString();
-          //
+//
           //this.EmailModel.payload.ClosedBy = this.getUserActive.username;
           //this.EmailModel.payload.ClosedAt = resolve.declaredAt;
           //if (resolve.driver_out != null) {
@@ -2027,7 +1653,7 @@ export default {
           //}
           //this.EmailModel.payload.DeclaredBy = resolve.declared_by.username;
           //this.EmailModel.payload.DeclaredAt = resolve.declaredAt;
-          //
+//
           //this.SendEmailAction(this.EmailModel).then(() => {
           //});
           this.resolvedDialoge = false;
@@ -2051,11 +1677,13 @@ export default {
       formData.append(`damages[id]`, this.revertDamage.id);
       formData.append(`damages[rejectedBy_id]`, this.revertDamage.rejectedBy_id);
       formData.append(`damages[damageTech_cmt_payload][comment]`, this.damageTech_cmt_payload.comment);
-      this.damageTech_cmt_payload.files.forEach((picFile, picIndex) => {
-        formData.append(`damages[damageTech_cmt_payload][files][${picIndex}]`, picFile);
+      this.damageTech_cmt_payload.pics.forEach((picFile, picIndex) => {
+        formData.append(`damages[damageTech_cmt_payload][pics][${picIndex}]`, picFile);
       });
-
-
+      
+      console.log("this.damageTech_cmt_payload :",this.damageTech_cmt_payload);
+      console.log("this.getUserActive :",this.getUserActive);
+      console.log("this.resolveditem :",this.revertDamage);
       this.revertDamageAction_2(formData)
         .then((resolve) => {
           //this.EmailModel.payload.Equipment = this.EquipmentName[0].name;
@@ -2066,87 +1694,59 @@ export default {
           //this.EmailModel.email =
           //  this.departmentOP.email.toString() +
           //  this.resolveditem[0].department.email.toString();
-          //
+//
           //this.EmailModel.payload.Status = "on progress";
           //this.EmailModel.payload.Rejected_by = this.getUserActive.username;
           //this.EmailModel.payload.RejectedAt = resolve.declaredAt;
           //this.EmailModel.payload.RejectedTimes = resolve.rejectedTimes;
           //this.EmailModel.payload.Confirmed_by = resolve.confirmed_by.username;
           //this.EmailModel.payload.ConfirmedAt = resolve.declaredAt;
-          //
+//
           //if (resolve.driver_out != null) {
           //  this.EmailModel.payload.DriverOut = resolve.driver_out.username;
           //} else {
           //}
           //this.EmailModel.payload.DeclaredBy = resolve.declared_by.username;
           //this.EmailModel.payload.declaredAt = resolve.declaredAt;
-          //
+//
           //this.SendEmailAction(this.EmailModel).then(() => {
           //});
-          this.damageTech_cmt_payload = {
+          console.log("resolve",resolve)
+          this.damageTech_cmt_payload={
             comment: "",
-            files: []
+            pics: []
           };
-
+          console.log("kdkdkdkd",this.resolveditem[0])
+          console.log("this.damageTypesTEC :",this.damageTypesTEC);
           this.defectedDialoge = false;
           this.modelTEC = [];
           this.modelIT = [];
-          this.resolvedDialoge = false;
-          this.damageTypesTEC = this.damageTypesTEC.map((e) => {
-            let isChecked = false;
-            e.damageTypes = e.damageTypes.map((c) => {
-              if (c.id == this.resolveditem[0].id) {
-                c.damage = resolve;
+          this.resolvedDialoge=false;
+          this.damageTypesTEC=this.damageTypesTEC.map((e)=>{
+            let isChecked=false;
+            e.damageTypes=e.damageTypes.map((c)=>{
+              if(c.id==this.resolveditem[0].id){
+                c.damage=resolve;
               }
 
-              if (c.damage != null)
-                isChecked = true;
-
+              if(c.damage!=null)
+                isChecked=true;
+              
               return c;
             });
-            e.damage = isChecked;
+            e.damage=isChecked;
             return e;
           });
-
-          this.damageTypesIT = this.damageTypesIT.map((e) => {
-            if (e.name != "OTHER") {
-              let isChecked = false;
-              if (e.id == this.resolveditem[0].id) {
-                e.damage = resolve;
+          this.damageTypesIT=this.damageTypesIT.map((c)=>{
+            let isChecked=false;
+            if(c.id==this.resolveditem[0].id){
+                c.damage=resolve;
               }
-              return e;
-            }
-            else {
-              let isChecked = false;
-              e.damageTypes = e.damageTypes.map((c) => {
-                if (c.id == this.resolveditem[0].id) {
-                  c.damage = resolve;
-                }
-
-                if (c.damage != null)
-                  isChecked = true;
-
-                return c;
-              });
-              e.damage = isChecked;
-              return e;
-            }
-
+            return c;
           });
-
-          this.countReset();
-          if (this.resolveditem[0]?.department_id!=1 && this.resolveditem[0]?.damage_type_master.name == "OTHER") {
-            console.log("dkhl.")
-            this.valider_cmt_first_confirm();
-          }
-
-
-
-
-
           this.resolvedDialoge = false;
 
-          this.LoadingPage = false;
+           this.LoadingPage = false;
 
           //this.$router.go();
         })
@@ -2229,32 +1829,30 @@ export default {
       this.listDefectsNamesTECFinal = [];
     },
     validerDamages() {
-      console.log("this.Data :", this.Data);
       this.LoadingPage = true;
       let formData = new FormData();
       this.Data.forEach((item, index) => {
         formData.append(`damages[${index}][declaredBy_id]`, item.declaredBy_id);
         formData.append(`damages[${index}][equipment_id]`, item.equipment_id);
         formData.append(`damages[${index}][damage_type_id]`, item.damage_type_id);
-        formData.append(`damages[${index}][damage_master_id]`, item.damage_master_id);
         formData.append(`damages[${index}][shift]`, item.shift);
-        console.log("item lààà", item);
-        console.log("this.damageTypesIT :", this.damageTypesIT);
-        if (item.department_id == 2 || this.damageTypesIT?.filter((l) => l?.damageTypes.filter((o) => o.damageType_master.id == item.damage_master_id).length > 0).length > 0) {
+        console.log("item",item)
+        if(item.department_id==2){
+           console.log("item entered",item)
           formData.append(`damages[${index}][damageTech_cmt_payload][comment]`, item.damageTech_cmt_payload.comment);
 
-          item.damageTech_cmt_payload.files.forEach((picFile, picIndex) => {
-            formData.append(`damages[${index}][damageTech_cmt_payload][files][${picIndex}]`, picFile);
-          });
+          item.damageTech_cmt_payload.pics.forEach((picFile, picIndex) => {
+          formData.append(`damages[${index}][damageTech_cmt_payload][pics][${picIndex}]`, picFile);
+        });
         } else {
+          
+        formData.append(`damages[${index}][damageTech_cmt_payload][comment]`, this.damageTech_cmt_payload.comment);
 
-          formData.append(`damages[${index}][damageTech_cmt_payload][comment]`, this.damageTech_cmt_payload.comment);
-
-          this.damageTech_cmt_payload.files.forEach((picFile, picIndex) => {
-            formData.append(`damages[${index}][damageTech_cmt_payload][files][${picIndex}]`, picFile);
-          });
+        this.damageTech_cmt_payload.pics.forEach((picFile, picIndex) => {
+          formData.append(`damages[${index}][damageTech_cmt_payload][pics][${picIndex}]`, picFile);
+        });
         }
-
+        
       });
       if (this.Data.length == 0) {
         if (this.equipments_id == "") {
@@ -2280,6 +1878,7 @@ export default {
           this.dialogValideDamage = false;
         }
       } else if (this.Data.length > 0) {
+        console.log("formData :",formData);
         this.declareDamageAction(formData)
           .then((resolve) => {
             this.modelTEC = [];
@@ -2316,7 +1915,7 @@ export default {
 
               this.EmailModel.payload.Department = "IT";
               this.EmailModel.payload.Status = "on progress";
-              this.EmailModel.status = "Defective ";
+              this.EmailModel.status = "Defected ";
               this.EmailModel.email =
                 this.departmentIT.email.toString() +
                 this.departmentOP.email.toString();
@@ -2346,7 +1945,7 @@ export default {
 
                 this.EmailModelTEC.payload.Department = "TECHNIQUE";
                 this.EmailModelTEC.payload.Status = "on progress";
-                this.EmailModelTEC.status = "Defective ";
+                this.EmailModelTEC.status = "Defected ";
                 this.EmailModelTEC.email =
                   this.departmentTEC.email.toString() +
                   "," +

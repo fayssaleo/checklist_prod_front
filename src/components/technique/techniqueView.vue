@@ -1,156 +1,132 @@
 <template>
-  <div style="padding: 30px; padding-top: 2%">
-    <v-row style="text-align: center">
-      <v-col cols="12" md="12">
-        <h3>
-          Equipment group :
-          <span class="red--text"> {{ this.ProfileGroupsByCounter.name }}</span>
-        </h3>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="4" md="4">
-        <template>
-          <v-card class="mx-auto" max-width="240" max-height="200" min-height="200" outlined>
-            <v-list-item three-line class="d-flex ">
-              <v-list-item-content>
-                <div class="text-overline mb-4 red--text">
-                  Total Equipment With  defects items
 
-                </div>
-                <v-list-item-title class="text-h5 mb-1 red--text">
-                  {{ this.ProfileGroupsByCounter.nonFunctionalEquipmnet }}
-                </v-list-item-title>
-              </v-list-item-content>
-
-              <v-list-item-avatar tile size="35" color="white">
-                <v-icon color="red" large>
-                  mdi-alarm-light
-                </v-icon></v-list-item-avatar
-              >
-            </v-list-item>
-          </v-card>
-        </template>
-      </v-col>
-      <v-col cols="4" md="4">
-        <template>
-          <v-card class="mx-auto" max-width="240" max-height="200"  min-height="200" outlined>
-            <v-list-item three-line class="d-flex ">
-              <v-list-item-content>
-                <div class="text-overline mb-4 deep-orange--text">
-                  RESOLVED defective items 
-                </div>
-                <v-list-item-title class="text-h5 mb-1 deep-orange--text">
-                  <br/> {{ this.ProfileGroupsByCounter.confirmedCount }}
-                </v-list-item-title>
-              </v-list-item-content>
-
-              <v-list-item-avatar tile size="35" color="white">
-                <v-icon color="deep-orange" large>
-                  mdi-bell-check
-                </v-icon></v-list-item-avatar
-              >
-            </v-list-item>
-          </v-card>
-        </template>
-      </v-col>
- 
-
-      <v-col cols="4" md="4">
-        <template>
-          <v-card class="mx-auto" max-width="240" max-height="200" min-width="130" min-height="200" outlined>
-            <v-list-item three-line class="d-flex ">
-              <v-list-item-content>
-                <div class="text-overline mb-4 green--text">
-                  Total Equipment With non defects items
-                </div>
-                <v-list-item-title class="text-h5 mb-1 green--text">
-                  {{ this.ProfileGroupsByCounter.functionalEquipmnet }}
-                </v-list-item-title>
-              </v-list-item-content>
-
-              <v-list-item-avatar tile size="35" color="white">
-                <v-icon color="green" large>
-                  mdi-check-bold
-                </v-icon></v-list-item-avatar
-              >
-            </v-list-item>
-          </v-card>
-        </template>
-      </v-col>
-    </v-row>
-    <div style="padding: 3px; padding-top: 4%">
       <v-data-table
         :headers="computedHeaders"
         :items="equipments"
         :search="search"
         :loading="loading"
         sort-by="item.id"
-        class="elevation-1"
+        class="elevation-1 technique_table_new"
+        v-if="viewTable"
+        :items-per-page="5"
       >
-        <template v-slot:item="{ item }">
-          <tr :class="getColor(item)">
-            <td class="">{{ item.nameEquipment }}</td>
+       <template v-slot:item="{ item }">
+      <tr @click="pageView(item)" class="" style="background-color:rgb(107 112 124) ;">
+        
 
-            <td class="text-uppercase" v-if="userDepartment != 'TECHNIQUE' && item.isShecked == true">Checked</td>
-            <td class="text-uppercase" v-else-if="userDepartment != 'TECHNIQUE' && item.isShecked == false">unchecked </td>
-
-            <td class="">{{ item.ceriticalDefectsCount }}</td>
-            <td class="">{{ item.damagedCount }}</td>
-            <td class="">{{ item.confirmedCount }}</td>
-            <td>
-              <v-btn
-                color="teal"
-                class="mr-2 btn white--text"
-                @click="pageView(item)"
-              >
-                <v-icon medium class="mr-2"> mdi-eye-outline </v-icon>
-              </v-btn>
-            </td>
-          </tr>
-        </template>
-        <template v-slot:top>
-          <v-toolbar flat>
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              label="Search"
-              single-line
-              hide-details
-            ></v-text-field>
-            <v-spacer></v-spacer>
-          </v-toolbar>
-        </template>
-        <template v-slot:[`item.actions`]="{ item }">
-          <v-btn
-            color="primary"
-            class="mr-2 btn white--text"
-            @click="pageView(item)"
-          >
+        <td>
+          <img :src="require(`@/assets/_${selectEquipmentType?.name}_icon.jpg`)" alt="">
+        </td>
+        <td>
+          {{ item?.nameEquipment }}
+        </td>
+        <td 
+        v-if="getUserActive?.fonction?.department_id==3 || getUserActive?.fonction?.name=='ADMIN'"
+        :class="(item.isShecked)?'isShecked_yes':'isShecked_no'">
+          <v-icon >mdi-check-circle-outline</v-icon>
+        </td>
+        <td v-if="closedShow_archive">
+          {{ item?.closedCount }}
+        </td>
+        <td>
+          {{ item?.damagedCount+item?.confirmedCount }}
+        </td>
+        <td>
+          {{ item?.damagedCount }}
+        </td>
+        <td>
+          {{ item?.confirmedCount }}
+        </td>
+        <td>
+          <v-btn style="    border-radius: 146px;" color="transparent" class="mr-2 btn white--text btn" @click="pageView(item)">
             <v-icon medium class="mr-2"> mdi-eye-outline </v-icon>
           </v-btn>
-        </template>
+        </td>
+      </tr>
+    </template>
+
+
+
         <template v-slot:no-data>
-          <v-btn color="primary" @click="initialize()"> Reset </v-btn>
+          <v-btn color="#293777" style="color:white" @click="initialize()"> Reset </v-btn>
         </template>
       </v-data-table>
-    </div>
-  </div>
+      <v-row v-else>
+          <v-col cols="6" v-for="item in equipments">
+            <span class="profile_group_tickets" style="background-color: rgb(21 43 98) ;" @click="pageView(item)"
+            :class="(item.isShecked)?'isShecked_yes':'isShecked_no'"
+            >
+              <img style="border-color:rgb(21 43 98)  ;" :src="require(`@/assets/_${selectEquipmentType?.name}_icon.jpg`)" alt="">
+
+              {{ item?.nameEquipment }}
+              <v-icon v-if="getUserActive?.fonction?.department_id==3 || getUserActive?.fonction?.name=='ADMIN'">mdi-check-circle-outline</v-icon>
+
+              <span v-if="closedShow_archive" class="c__" :class="(item?.isShecked)?'isCheckedEquipment':''">
+                CLOSED
+                <span 
+                class="profile_group_tickets_number"
+                style="color:rgb(178 189 255);font-weight: 900;font-size: 15px;">
+                {{ item?.closedCount }}
+                </span>
+              </span>
+
+              <span class="t_">TOTAL DEFECTS<span class="profile_group_tickets_number"
+                  style="font-weight: 900;font-size: 15px;">{{ (item?.confirmedCount+item?.damagedCount) }}</span></span>
+              
+              <span class="tf_">IN PROGRESS<span class="profile_group_tickets_number"
+                  style="color:#d43737;font-weight: 900;font-size: 15px;">{{ (item?.damagedCount) }}</span></span>
+              <span class="r_">RESOLVED<span class="profile_group_tickets_number"
+                  style="color:#fb8500;font-weight: 900;font-size: 15px;">{{(item?.confirmedCount)}}</span></span>
+
+            </span>
+
+          </v-col>
+        </v-row>
+
 </template>
 <script>
 import { mapActions, mapGetters } from "vuex";
 
 export default {
+  props:["idDomainGroupesid","viewTable","selectEquipmentType","closedShow_archive"],
   data: () => ({
     loading: false,
     search: "",
     headers: [
-      { text: "Name", value: "nameEquipment", sortable: true },
-      { text: "Checklist", value: "isShecked", sortable: true },
-      { text: "Critical  defects", value: "ceriticalDefectsCount", sortable: true },
-      { text: "Total defects items", value: "damagedCount", sortable: true },
-      { text: "Resolved", value: "confirmedCount", sortable: true },
-      { text: "Actions", value: "actions", sortable: false },
+      {
+        text: "",
+        value: "",
+      },
+      { text: "NAME",value: "name", sortable: true },
+
+      {
+        text: "CHECKED",
+        value: "equipmentCheckedCount",
+        sortable: true,
+      },
+      {
+        text: "TOTAL CLOSED",
+        value: "closedCount",
+        sortable: true,
+      },
+      {
+        text: "TOTAL DEFECTS",
+        value: "damagedCount",
+        sortable: true,
+      },
+      
+      {
+        text: "IN PROGRESS",
+        value: "damagedCount",
+        sortable: true,
+      },
+      {
+        text: "RESOLVED",
+        value: "confirmedCount",
+        sortable: true,
+      },
+
+      { text: "", value: "actions", sortable: false },
     ],
     equipments: [],
     equipmentsFiltre: [],
@@ -193,30 +169,38 @@ export default {
     userDepartment:"",
   }),
   mounted() {
-    document.title = "Checklist";
+    document.title = "CHECKLIST" +(" - "+ ((this.selectEquipmentType)?this.selectEquipmentType?.name:""));
     this.fonction = this.getUserActive.fonction.name;
     this.userDepartment = this.getUserActive.fonction.department.name;
     this.loading = true;
-    setTimeout(() => {
-      this.initialize();
-      this.loading = false;
-    }, 2500);
+    this.initialize();
+      
   },
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "New Item" : "Edit Item";
     },
     computedHeaders () {
-      this.fonction = this.getUserActive.fonction.name;
-      this.userDepartment = this.getUserActive.fonction.department.name;
-        if (this.userDepartment == 'TECHNIQUE') {
-          
-          return this.headers.filter((c)=> c.value != "isShecked")  
-        }else return this.headers;
+      let header=[];
+      this.headers.map((r)=>{
+        if(this.getUserActive?.fonction?.department_id!=3 && this.getUserActive?.fonction?.name!='ADMIN'){
+          if(r.value == "equipmentCheckedCount"){
+            return;
+          }
+        }
+        if(!this.closedShow_archive){
+          if(r.value == "closedCount"){
+            return;
+          }
+        }
+        header.push(r);
+      });
+
+      return header;
+
     },
     ...mapGetters([
       "getequipments",
-      "getProfileGroupsByCounter",
       "getEquipmentsByCounters",
       "getUserActive",
     ]),
@@ -235,123 +219,109 @@ export default {
   methods: {
     getColor(item) {
       var color = "";
-      if (item.damagedCount > 0 || item.confirmedCount > 0) color = "red lighten-1 white--text";
-      else if (item.damagedCount == 0 || item.confirmedCount == 0) color = "green lighten-1 white--text";
+      if (item.damagedCount > 0 || item.confirmedCount > 0) color = "#d43737";
+      else if (item.damagedCount == 0 || item.confirmedCount == 0) color = "#1e2855";
       return color;
     },
     initialize() {
-      this.idgrp = localStorage.getItem("idDomainGroupes");
+      this.idgrp = this.idDomainGroupesid;
 
       if (this.getUserActive.fonction.name == "ADMIN") {
-        this.getEquipmentsByCountersAction(
-          localStorage.getItem("idDomainGroupesid")
-        ).then((resolve) => {
-          this.equipments = [...this.getEquipmentsByCounters];
+
+          this.equipments = [...this.selectEquipmentType.equipment];
           //  console.log("this.equipments",this.equipments);
-        });
-        this.getProfileGroupsByCounterAction(
-          localStorage.getItem("idDomainGroupesid")
-        ).then(() => {
-          this.ProfileGroupsByCounter.id = this.getProfileGroupsByCounter.id;
-          this.ProfileGroupsByCounter.name =
-            this.getProfileGroupsByCounter.name;
-          this.ProfileGroupsByCounter.equipmentsCount =
-            this.getProfileGroupsByCounter.equipmentsCount;
-          this.ProfileGroupsByCounter.functionalEquipmnet =
-            this.getProfileGroupsByCounter.functionalEquipmnet;
-          this.ProfileGroupsByCounter.damagedCount =
-            this.getProfileGroupsByCounter.damagedCount;
-          this.ProfileGroupsByCounter.confirmedCount =
-            this.getProfileGroupsByCounter.confirmedCount;
-          this.ProfileGroupsByCounter.closedCount =
-            this.getProfileGroupsByCounter.closedCount;
-            this.ProfileGroupsByCounter.nonFunctionalEquipmnet =
-            this.getProfileGroupsByCounter.nonFunctionalEquipmnet;
-        });
+    
+      
+          this.selectEquipmentType.id = this.selectEquipmentType.id;
+          this.selectEquipmentType.name =
+            this.selectEquipmentType.name;
+          this.selectEquipmentType.equipmentsCount =
+            this.selectEquipmentType.equipmentsCount;
+          this.selectEquipmentType.functionalEquipmnet =
+            this.selectEquipmentType.functionalEquipmnet;
+          this.selectEquipmentType.damagedCount =
+            this.selectEquipmentType.damagedCount;
+          this.selectEquipmentType.confirmedCount =
+            this.selectEquipmentType.confirmedCount;
+          this.selectEquipmentType.closedCount =
+            this.selectEquipmentType.closedCount;
+            this.selectEquipmentType.nonFunctionalEquipmnet =
+            this.selectEquipmentType.nonFunctionalEquipmnet;
+   
       } else {
          if (this.getUserActive.fonction.department_id == 1) {
-        this.getEquipmentsByCountersITAction(
-          localStorage.getItem("idDomainGroupesid")
-        ).then((resolve) => {
-          this.equipments = [...this.getEquipmentsByCounters];
+       
+          this.equipments = [...this.selectEquipmentType.equipment];
           //  console.log("this.equipments",this.equipments);
-        });
-        this.getProfileGroupsByCounterITAction(
-          localStorage.getItem("idDomainGroupesid")
-        ).then(() => {
-          this.ProfileGroupsByCounter.id = this.getProfileGroupsByCounter.id;
-          this.ProfileGroupsByCounter.name =
-            this.getProfileGroupsByCounter.name;
-          this.ProfileGroupsByCounter.equipmentsCount =
-            this.getProfileGroupsByCounter.equipmentsCount;
-          this.ProfileGroupsByCounter.functionalEquipmnet =
-            this.getProfileGroupsByCounter.functionalEquipmnet;
-          this.ProfileGroupsByCounter.damagedCount =
-            this.getProfileGroupsByCounter.damagedCount;
-          this.ProfileGroupsByCounter.confirmedCount =
-            this.getProfileGroupsByCounter.confirmedCount;
-          this.ProfileGroupsByCounter.closedCount =
-            this.getProfileGroupsByCounter.closedCount;
-            this.ProfileGroupsByCounter.nonFunctionalEquipmnet =
-            this.getProfileGroupsByCounter.nonFunctionalEquipmnet;
-        });
+    
+       
+          this.selectEquipmentType.id = this.selectEquipmentType.id;
+          this.selectEquipmentType.name =
+            this.selectEquipmentType.name;
+          this.selectEquipmentType.equipmentsCount =
+            this.selectEquipmentType.equipmentsCount;
+          this.selectEquipmentType.functionalEquipmnet =
+            this.selectEquipmentType.functionalEquipmnet;
+          this.selectEquipmentType.damagedCount =
+            this.selectEquipmentType.damagedCount;
+          this.selectEquipmentType.confirmedCount =
+            this.selectEquipmentType.confirmedCount;
+          this.selectEquipmentType.closedCount =
+            this.selectEquipmentType.closedCount;
+            this.selectEquipmentType.nonFunctionalEquipmnet =
+            this.selectEquipmentType.nonFunctionalEquipmnet;
+       
       } else if (this.getUserActive.fonction.department_id == 2) {
-        this.getEquipmentsByCountersTECAction(
-          localStorage.getItem("idDomainGroupesid")
-        ).then((resolve) => {
-          this.equipments = [...this.getEquipmentsByCounters];
+        
+          this.equipments = [...this.selectEquipmentType.equipment];
           console.log("this.equipments", this.equipments);
-        });
-        this.getProfileGroupsByCounterTECAction(
-          localStorage.getItem("idDomainGroupesid")
-        ).then(() => {
-          this.ProfileGroupsByCounter.id = this.getProfileGroupsByCounter.id;
-          this.ProfileGroupsByCounter.name =
-            this.getProfileGroupsByCounter.name;
-          this.ProfileGroupsByCounter.equipmentsCount =
-            this.getProfileGroupsByCounter.equipmentsCount;
-          this.ProfileGroupsByCounter.functionalEquipmnet =
-            this.getProfileGroupsByCounter.functionalEquipmnet;
-          this.ProfileGroupsByCounter.damagedCount =
-            this.getProfileGroupsByCounter.damagedCount;
-          this.ProfileGroupsByCounter.confirmedCount =
-            this.getProfileGroupsByCounter.confirmedCount;
-          this.ProfileGroupsByCounter.closedCount =
-            this.getProfileGroupsByCounter.closedCount;
-            this.ProfileGroupsByCounter.nonFunctionalEquipmnet =
-            this.getProfileGroupsByCounter.nonFunctionalEquipmnet;
-        });
+       
+       
+          this.selectEquipmentType.id = this.selectEquipmentType.id;
+          this.selectEquipmentType.name =
+            this.selectEquipmentType.name;
+          this.selectEquipmentType.equipmentsCount =
+            this.selectEquipmentType.equipmentsCount;
+          this.selectEquipmentType.functionalEquipmnet =
+            this.selectEquipmentType.functionalEquipmnet;
+          this.selectEquipmentType.damagedCount =
+            this.selectEquipmentType.damagedCount;
+          this.selectEquipmentType.confirmedCount =
+            this.selectEquipmentType.confirmedCount;
+          this.selectEquipmentType.closedCount =
+            this.selectEquipmentType.closedCount;
+            this.selectEquipmentType.nonFunctionalEquipmnet =
+            this.selectEquipmentType.nonFunctionalEquipmnet;
+       
       } else {
-        this.getEquipmentsByCountersAction(
-          localStorage.getItem("idDomainGroupesid")
-        ).then((resolve) => {
-          this.equipments = [...this.getEquipmentsByCounters];
+        
+          
+       
+          this.equipments = [...this.selectEquipmentType.equipment];
           //  console.log("this.equipments",this.equipments);
-        });
-        this.getProfileGroupsByCounterAction(
-          localStorage.getItem("idDomainGroupesid")
-        ).then(() => {
-          this.ProfileGroupsByCounter.id = this.getProfileGroupsByCounter.id;
-          this.ProfileGroupsByCounter.name =
-            this.getProfileGroupsByCounter.name;
-          this.ProfileGroupsByCounter.equipmentsCount =
-            this.getProfileGroupsByCounter.equipmentsCount;
-          this.ProfileGroupsByCounter.functionalEquipmnet =
-            this.getProfileGroupsByCounter.functionalEquipmnet;
-          this.ProfileGroupsByCounter.damagedCount =
-            this.getProfileGroupsByCounter.damagedCount;
-          this.ProfileGroupsByCounter.confirmedCount =
-            this.getProfileGroupsByCounter.confirmedCount;
-          this.ProfileGroupsByCounter.closedCount =
-            this.getProfileGroupsByCounter.closedCount;
-            this.ProfileGroupsByCounter.nonFunctionalEquipmnet =
-            this.getProfileGroupsByCounter.nonFunctionalEquipmnet;
-        });
+        
+        
+          this.selectEquipmentType.id = this.selectEquipmentType.id;
+          this.selectEquipmentType.name =
+            this.selectEquipmentType.name;
+          this.selectEquipmentType.equipmentsCount =
+            this.selectEquipmentType.equipmentsCount;
+          this.selectEquipmentType.functionalEquipmnet =
+            this.selectEquipmentType.functionalEquipmnet;
+          this.selectEquipmentType.damagedCount =
+            this.selectEquipmentType.damagedCount;
+          this.selectEquipmentType.confirmedCount =
+            this.selectEquipmentType.confirmedCount;
+          this.selectEquipmentType.closedCount =
+            this.selectEquipmentType.closedCount;
+            this.selectEquipmentType.nonFunctionalEquipmnet =
+            this.selectEquipmentType.nonFunctionalEquipmnet;
+        
       }
       }
 
      
-
+      this.loading = false;
       console.log("this.ProfileGroupsByCounter", this.ProfileGroupsByCounter);
     },
     ...mapActions([
@@ -364,13 +334,25 @@ export default {
       "getEquipmentsByCountersTECAction",
     ]),
     pageView(item) {
-      this.$router.push({
-        name: "techniqueEquipment",
-        params: { name: item.name },
-      });
-      console.log("item.id", item.id);
-      localStorage.removeItem("idEquipment");
-      localStorage.setItem("idEquipment", item.id);
+      this.$emit("setStep_3",item.id)
+     // this.$router.push({
+     //   name: "techniqueEquipment",
+     //   params: { name: item.name },
+     // });
+     // console.log("item.id", item.id);
+     // localStorage.removeItem("idEquipment");
+     // localStorage.setItem("idEquipment", item.id);
+    },
+    getProfileGroupIcon(name) {
+      try {
+        // Remove spaces and handle case sensitivity if needed
+        const fileName = `_${name}_icon.jpg`;
+        console.log("fileName ",name);
+        return require(`@/assets/${fileName}`);
+      } catch (e) {
+        // fallback image if not found
+        return require('@/assets/_STS_icon.jpg');
+      }
     },
   },
 };

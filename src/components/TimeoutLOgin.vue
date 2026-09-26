@@ -133,13 +133,17 @@ export default {
             window.location.reload();
           } else if (
             resolve.user.fonction.department.name == "OPERATIONS" &&
-            resolve.user.fonction.name != "DRIVER"
+            resolve.user.fonction.name != "DRIVER" &&
+            resolve.user.fonction.name != "CHECKER"
           ) {
             this.$router.push({
               name: "technique",
             });
             window.location.reload();
-          } else if (resolve.user.fonction.name == "DRIVER") {
+          } else if (
+            resolve.user.fonction.name == "DRIVER" ||
+            resolve.user.fonction.name == "CHECKER"
+          ) {
             this.$router.push({
               name: "Damage",
             });

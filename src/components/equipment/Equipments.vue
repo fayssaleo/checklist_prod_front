@@ -25,7 +25,7 @@
                 v-bind="attrs"
                 v-on="on"
               >
-                <v-icon left> mdi-account-multiple-plus </v-icon>
+                <v-icon left> mdi-plus </v-icon>
                 Add
               </v-btn>
             </template>
@@ -222,7 +222,6 @@ export default {
           .then((equipment) => {
             this.equipmentsFiltres.push(equipment);
 
-            this.LoadingPage = true;
 
             setTimeout(() => {
               this.LoadingPage = false;
@@ -240,7 +239,6 @@ export default {
               return c;
             });
 
-            this.LoadingPage = true;
 
             setTimeout(() => {
               this.LoadingPage = false;

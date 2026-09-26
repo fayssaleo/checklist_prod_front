@@ -17,6 +17,67 @@
             hide-details
           ></v-text-field>
           <v-spacer></v-spacer>
+          <v-dialog v-model="dialog_sub_types" >
+            
+            <v-card>
+              <v-toolbar dark color="primary">
+                <v-toolbar-title>{{ formTitle }} Damage Sub Type</v-toolbar-title>
+              </v-toolbar>
+              <v-card-title>
+                <span class="text-h5">Damage Sub Type :</span>
+              </v-card-title>
+
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-data-table
+                      :headers="headers_sub"
+                      :items="editedItem_sub.damage_types"
+                      sort-by="item.id"
+                      class="elevation-1"
+                      :search="search"
+                      style="width: 100%;"
+                    >
+                    <template v-slot:top>
+                     <div class="d-flex justify-end">
+                      <v-btn
+                        color="#002f6c"
+                        class="mb-2 btn white--text"
+                        v-bind="attrs"
+                        @click=" dialog_sub_add_open(item)"
+                      >
+                        <v-icon left>mdi-plus</v-icon>
+                        Add
+                      </v-btn>
+                    </div>
+                    </template>
+                    <template v-slot:[`item.actions`]="{ item }">
+                      <v-btn
+                        color="primary"
+                        @click="dialog_sub_edit_open(item)"
+                        class="m-2 mr-2 btn white--text"
+                      >
+                        <v-icon medium class="mr-2"> mdi-pencil </v-icon>
+                      </v-btn>
+                      <v-btn
+                        color="#f45"
+                        @click="deleteItem(item)"
+                        class="m-2 btn white--text"
+                      >
+                        <v-icon medium> mdi-delete </v-icon>
+                      </v-btn>
+                    </template>
+                  </v-data-table>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="" @click="dialog_sub_types_close"> Close </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -25,7 +86,7 @@
                 v-bind="attrs"
                 v-on="on"
               >
-                <v-icon left> mdi-account-multiple-plus </v-icon>
+                <v-icon left> mdi-plus </v-icon>
                 Add
               </v-btn>
             </template>
@@ -46,7 +107,7 @@
                         label="name"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="6" md="8">
+                    <v-col v-if="!dialog_sub_edit && !dialog_sub_add " cols="12" sm="6" md="8">
                       <v-select
                         :items="departments"
                         item-text="name"
@@ -118,6 +179,13 @@
       </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-btn
+          color="teal"
+          class="mr-2 btn white--text"
+          @click="dialog_sub_types_open(item)"
+        >
+          <v-icon medium class="mr-2"> mdi-eye-outline </v-icon>
+        </v-btn>
+        <v-btn
           color="primary"
           @click="editItem(item)"
           class="m-2 mr-2 btn white--text"
@@ -152,6 +220,9 @@ export default {
     LoadingPage,
   },
   data: () => ({
+    dialog_sub_add: false,
+    dialog_sub_edit: false,
+    dialog_sub_types: false,
     dialog: false,
     LoadingPage: false,
     dialogDelete: false,
@@ -163,14 +234,27 @@ export default {
       { text: "Created date", value: "created_at", sortable: true },
       { text: "Actions", value: "actions", sortable: false },
     ],
+    headers_sub: [
+      { text: "Name", value: "name", sortable: true },
+      { text: "Created date", value: "created_at", sortable: true },
+      { text: "Actions", value: "actions", sortable: false },
+    ],
     damageTypes: [],
     damageTypesByProfile_group_id: [],
     departments: [],
     editedIndex: -1,
+    editedIndex_sub: -1,
     editedItem: {
       name: "",
       profile_group_id: "",
       department_id: "",
+      damage_types:[]
+    },
+    editedItem_sub: {
+      name: "",
+      profile_group_id: "",
+      department_id: "",
+      damage_types:[]
     },
     defaultItem: {
       name: "",
@@ -187,6 +271,9 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "ADD" : "EDIT";
     },
+    formTitle_sub() {
+      return this.editedIndex_sub === -1 ? "ADD" : "EDIT";
+    },
     ...mapGetters([
       "getdamageTypes",
       "getdamageTypesByProfile_group_id",
@@ -202,6 +289,7 @@ export default {
           name: "",
           profile_group_id: "",
           department_id: "",
+          damage_types:[]
         };
         this.closemodifier();
       }
@@ -244,7 +332,31 @@ export default {
       "setDAMAGETYPESByProfile_group_idAction",
       "setDepartementsAction",
     ]),
-
+    dialog_sub_add_open(item){
+      this.dialog_sub_add=true;
+      this.editedIndex_sub=-1;
+      this.editItem(item)
+    },
+    dialog_sub_add_close(){
+      this.dialog_sub_add=false;
+      this.editedIndex_sub=1;
+    },
+    dialog_sub_edit_open(item){
+      this.dialog_sub_edit=true;
+      this.editedIndex_sub=1;
+      this.editItem(item)
+    },
+    dialog_sub_edit_close(){
+      this.dialog_sub_edit=false;
+      this.editedIndex_sub=-1;
+    },
+    dialog_sub_types_open(item){
+      this.editedItem_sub=item;
+      this.dialog_sub_types=true;
+    },
+    dialog_sub_types_close(){
+      this.dialog_sub_types=false;
+    },
     editItem(item) {
       this.editedIndex = this.damageTypes.indexOf(item) + 1;
       this.editedItem = Object.assign({}, item);
@@ -264,6 +376,10 @@ export default {
             this.damageTypesByProfile_group_id.filter((e) => {
               return e.id != this.editedItem.id;
             });
+          this.editedItem_sub.damage_types =
+            this.editedItem_sub.damage_types.filter((e) => {
+              return e.id != this.editedItem.id;
+            });
 
           this.LoadingPage = true;
 
@@ -280,6 +396,7 @@ export default {
     },
     close() {
       this.dialog = false;
+      this.dialog_sub_edit = false;
       this.closemodifier();
     },
     closeDelete() {
@@ -307,12 +424,18 @@ export default {
       };
     },
     save() {
-      if (this.editedIndex == -1) {
+      if (this.editedIndex == -1 || this.editedIndex_sub==-1 ) {
         this.editedItem.profile_group_id = localStorage.getItem("id");
+        if(this.dialog_sub_add ){
+          this.editedItem.damage_type_id=this.editedItem_sub.id;
+          this.editedItem.department_id=this.editedItem_sub.department_id;
+          console.log("hnaaa ",this.editedItem)
+        }
         this.addDAMAGETYPEAction(this.editedItem)
           .then((damageType) => {
             this.damageTypesByProfile_group_id.push(damageType);
-            this.LoadingPage = true;
+            this.editedItem_sub.damage_types.push(damageType);
+
 
             setTimeout(() => {
               this.LoadingPage = false;
@@ -333,9 +456,15 @@ export default {
       } else {
         this.editDAMAGETYPEAction(this.editedItem)
           .then((damageType) => {
+            this.editedItem_sub.damage_types=this.editedItem_sub.damage_types.map((z)=>{
+                    if(z.id==damageType.id) return damageType;
+                    return z;
+                  });
             this.damageTypesByProfile_group_id =
               this.damageTypesByProfile_group_id.map((c) => {
-                if (c.id == damageType.id) return damageType;
+                if (c.id == damageType.id) {
+                  
+                  return damageType};
                 return c;
               });
 

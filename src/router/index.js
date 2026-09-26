@@ -54,6 +54,13 @@ const routes = [
 
   },
   {
+    path: "/",
+    name: "technique",
+    component: technique,
+    params: true,
+
+  },
+  {
     path: "/techniqueView",
     name: "techniqueView",
     component: techniqueView,

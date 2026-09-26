@@ -200,6 +200,18 @@ const usersModule = {
           });
       });
     },
+    addUserFromExelAction({ commit }, user) {
+      return new Promise((resolve, reject) => {
+        CustomizedAxios.post("users/addArrayUsers", user)
+          .then((response) => {
+            //commit("ADD_USER", response.data.payload);
+            resolve(response.data.payload);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
   },
   getters: {
     getUsers: (state) => {

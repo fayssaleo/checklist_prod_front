@@ -37,7 +37,7 @@ const damageTypeModule = {
     sendDamagePhotosStoragePath(state, damage) {
       state.damages = state.damages.map((c) => {
         if (c.id == damage.id) {
-          c.photos = damage.photos;
+          c.files = damage.files;
           c.description = damage.description;
         }
         return c;
@@ -57,10 +57,12 @@ const damageTypeModule = {
           });
       });
     },
-    declareDamageAction({ commit }, damagesList) {
+    declareDamageAction({ commit }, formData) {
       return new Promise((resolve, reject) => {
-        CustomizedAxios.post("damages/declareDamage", {
-          damages: damagesList,
+        CustomizedAxios.post("damages/declareDamage", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         })
           .then((response) => {
             console.log("res add ", response);
@@ -98,6 +100,58 @@ const damageTypeModule = {
         })
           .then((response) => {
             console.log("res closeDamage ", response.data.payload);
+            commit("EDIT_DAMAGE", response.data.payload);
+            resolve(response.data.payload);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    confirmDamage_2Action_2({ commit }, formData) {
+      return new Promise((resolve, reject) => {
+        CustomizedAxios.post("damages/confirmDamage_2", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+          .then((response) => {
+            console.log("res closeDamage ", response.data.payload);
+            commit("EDIT_DAMAGE", response.data.payload);
+            resolve(response.data.payload);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    closeDamageAction_2({ commit }, formData) {
+      return new Promise((resolve, reject) => {
+        CustomizedAxios.post("damages/closeDamage_2", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+          .then((response) => {
+            console.log("res closeDamage ", response.data.payload);
+            commit("EDIT_DAMAGE", response.data.payload);
+            resolve(response.data.payload);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    revertDamageAction_2({ commit }, formData) {
+      return new Promise((resolve, reject) => {
+         CustomizedAxios.post("damages/revertDamage_2", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+          
+          .then((response) => {
+            console.log("res revertDamage ", response.data.payload);
             commit("EDIT_DAMAGE", response.data.payload);
             resolve(response.data.payload);
           })
@@ -259,15 +313,15 @@ const damageTypeModule = {
       });
     },
     SendEmailAction({ commit }, Data) {
-      return new Promise((resolve, reject) => {
-        AxiosSendEmail.post("http://localhost:8082/api", Data)
-          .then((response) => {
-            resolve(response.data.payload);
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      });
+      //return new Promise((resolve, reject) => {
+      //  AxiosSendEmail.post("http://localhost:8082/api", Data)
+      //    .then((response) => {
+      //      resolve(response.data.payload);
+      //    })
+      //    .catch((error) => {
+      //      reject(error);
+      //    });
+      //});
     },
   },
   getters: {

@@ -84,6 +84,7 @@ const damageTypeModule = {
           name: damageType.name,
           profile_group_id: damageType.profile_group_id,
           department_id: damageType.department_id,
+          damage_type_id: damageType.damage_type_id,
         })
           .then((response) => {
             console.log("res add ", response);

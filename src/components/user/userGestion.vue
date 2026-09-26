@@ -30,6 +30,11 @@
                 <v-icon left> mdi-account-multiple-plus </v-icon>
                 Add
               </v-btn>
+              <div class="mr-2">
+                <v-btn color="blue" outlined rounded @click="showDialogeExel()">
+                  <v-icon large color="blue"> mdi-attachment-plus </v-icon>
+                </v-btn>
+              </div>
             </template>
             <v-card>
               <v-toolbar dark color="primary">
@@ -139,7 +144,7 @@
               </v-toolbar>
               <v-container>
                 <v-row>
-                  <div style="padding: 22px; padding-top: 4%">
+                  <div style="padding: 22px; padding-top: 4%;width: 100%;">
                     <v-data-table
                       :headers="headersProfilegroup"
                       :items="profilegroupsActive"
@@ -395,12 +400,44 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <v-dialog v-model="dialogExel" max-width="800px">
+            <v-card>
+              <v-toolbar dark color="primary">
+                <v-toolbar-title>Ajouter from exel </v-toolbar-title>
+              </v-toolbar>
+              <v-container>
+                <v-row>
+                  <v-col cols="11">
+                    <h3 class="sub-title">File exel :</h3>
+                    <v-file-input
+                      outlined
+                      label="File"
+                      v-model="file"
+                    ></v-file-input>
+                  </v-col>
+                </v-row>
+              </v-container>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn depressed color="" @click="dialogExel = false"
+                  >Cancel</v-btn
+                >
+                <v-btn depressed color="primary" @click="addFromExel()"
+                  >Save</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-toolbar>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-btn
           v-if="
-            item.fonction.name == 'DRIVER' || item.fonction.name == 'FOREMAN'
+            item.fonction.name == 'DRIVER' ||
+            item.fonction.name == 'CHECKER' ||
+            item.fonction.name == 'FOREMAN'
           "
           color="#FB8C00"
           class="mr-2 btn white--text"
@@ -449,6 +486,7 @@ export default {
   },
   data: () => ({
     dialog: false,
+    dialogExel: false,
     LoadingPage: false,
     dialogDelete: false,
     dialogModifier: false,
@@ -527,6 +565,11 @@ export default {
       },
     },
     searchprofilegroupsActive: "",
+    file: [],
+    objectExel: {
+      users: [],
+      countUsers: 0,
+    },
   }),
   mounted() {
     document.title = "Checklist";
@@ -610,6 +653,7 @@ export default {
       "addUserToProfileGroupAction2",
       "deleteUserFromProfileGroupAction2",
       "resetPasswordAction",
+      "addUserFromExelAction",
     ]),
     changeDepartmentinDialogeProfilgroup() {
       this.profilegroupsActive = [];
@@ -804,6 +848,40 @@ export default {
         .catch(() => {
           swal("Error", "", "error");
         });
+    },
+    showDialogeExel() {
+      this.dialogExel = true;
+    },
+    addFromExel() {
+      var file = this.file,
+        f = file;
+
+      var XLSX = require("xlsx");
+      var reader = new FileReader();
+      var that = this;
+
+      reader.onload = function (e) {
+        var data = new Uint8Array(e.target.result);
+        var workbook = XLSX.read(data, { type: "array", cellDates: true });
+        let sheetName = workbook.SheetNames[0];
+        console.log(workbook);
+        let worksheet = workbook.Sheets[sheetName];
+        console.log(XLSX.utils.sheet_to_json(worksheet));
+        that.usersFromExel = [...XLSX.utils.sheet_to_json(worksheet)];
+        that.dataExelToObjectLaravel(that.usersFromExel);
+      };
+      reader.readAsArrayBuffer(f);
+      this.dialogExel = false;
+    },
+    dataExelToObjectLaravel(DATA) {
+      this.objectExel.users = DATA;
+      this.objectExel.countUsers = DATA.length;
+
+      this.addUserFromExelAction(this.objectExel).then((resolve) => {
+        this.initialize();
+        this.dialogExel = false;
+      });
+      setTimeout(() => {}, 3000);
     },
   },
 };

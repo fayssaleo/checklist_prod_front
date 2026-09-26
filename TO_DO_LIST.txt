@@ -1,0 +1,146 @@
+LAST TOUCH BEFORE DAMAGE VIEW :
+ - set COUNTERS design in TYPES done
+ - set COUNTERS design in EQUIPMENTS done
+
+ - set COUNTERS design in DEFECTS :
+    - set potos headers DONE
+    - make animations when dragging done
+    - show confirmation and action done
+ - set tables design done
+NOW :
+- msg finalazing done
+- add photos done
+- chat box design :
+  - icon colors for ops in blue and tech in orange done
+  - show opsPicture done
+  - icons in header float to done
+
+- files
+- show defecfs ressemblations
+- join defect 
+- defect history 
+
+
+
+- private disscussion
+
+D&D DRAG AND DROP TICKETS:
+- make it happen first ! done
+- finalize it then done
+
+
+
+
+
+REST : 
+ - set empty VIEW done
+ - set icons and logos design done 
+ - set logo mapping for equipments from database done
+ - navigation done
+ - defects table color by status done
+ - archive done
+- finl design of counters done
+- add defects title done
+- details rewiew done
+- last comment color must take all th echat nox done
+  - textarea in comment color done
+  - header done
+  - button done
+
+- declare 
+header z-index 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DEFECT RESOLUTION :
+ - add sub defect types managment box in defects item done
+ - link them to backend controls done
+ - in driver screen add defects sub types when click in defect master types done
+
+
+ - confirm done
+ - reject done
+ - all actions after then done
+ - technique master types done
+ - technique comment colors
+ - equipment major eqp done
+ - design in driver screen :
+  = main box borders done
+  = boxes border done
+  = title color done
+  = in defected and resolved deals done
+  = dialogs done
+  = counter when change done
+  = other comments done
+  = header menu color done
+  = algo opt done
+  - actions optimizing done
+
+ - loading done
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ - notification if resulotion confirmtion pass 24h with email
+ - dashbord...
+ - POWER BI report
+
+
+
+
+CLASSIFIED TO DO LIST :
+- TA ENVIRONMENT SYSTEM
+- SOFTWAR SHORT LINKS 
+- SECURITY MONITORING
+- ONE USERS MANAGMENT MODULE
+- TA BI REPORTS
+- TA AI SUPPORT
+- TA ISSUES MANAGMENT
+- TA PROJECT MANAGMENT

@@ -20,7 +20,7 @@
                 v-bind="attrs"
                 v-on="on"
               >
-                <v-icon left> mdi-account-multiple-plus </v-icon>
+                <v-icon left> mdi-plus </v-icon>
                 Add
               </v-btn>
             </template>
